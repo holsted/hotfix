@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<head>
+<link rel="stylesheet" type="text/css" href="style.css" />
+</head>
+<body>
+<div id="wrapper">
+	
+	
+	<div id="unauthorized">
+	<div id="authorize-instructions">
+		Hey there. Before you can get started you need to authorize this extension to access your GitHub repos. Click the authorize button below and you'll be all set. 
+	</div>
+	<button id="authorize-button">Authorize Me!</button>
+
+	</div>
+	
+	<div id="authorized">
+		<div id = "sidebar">
+			<div id="sidebar-header">
+				<div id="extension-title">
+					<h1>Hotfix</h1>
+				</div>
+			</div>
+			<div id="username"></div><button id="logout">Logout</button>
+			<div id="repository-details">
+				<div id="repo-wrapper">
+				<label for "repo-list">Select a repository:</label>
+				<select id="repo-list" name="repo-list">
+				<option> </option>
+				</select>
+				</div>
+				<div id="branch-wrapper">
+					<label for "branch-list">Choose a branch</label>
+					<select id="branch-list" name="branch-list">
+					</select>
+				</div>
+			</div>
+		</div>
+			
+		<label for "commit-message">Enter a commit message : <label>
+			<input id="commit-message" type=text" />
+			
+			<button id= "push"> Push to GitHub </button>
+		<div id="changed-files">
+		
+		
+		</div>
+	</div>
+</div>
+<script src="lib/underscore-min.js"></script>
+<script src="hotfix.js"></script>
+<script src="github.js"></script>
+<script src="panel.js"></script>
+</body>
+</html>

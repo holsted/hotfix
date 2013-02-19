@@ -1,0 +1,44 @@
+body{
+	margin:0;
+	padding:0;
+	
+
+}
+
+
+#sidebar {
+	float:left;
+	width:200px;
+	background-color: rgb(214, 221, 229);
+	height:700px;
+	overflow:none;
+	border-right: 1px solid rgb(64%, 64%, 64%);
+	margin-top:-21px;
+	padding: 0 5px 0 5px;
+}
+
+#sidebar-header{
+	height:56px;
+	line-height:54px;
+	font-size:15px;
+}
+
+#branch-wrapper{
+	display:none;
+}
+
+#changed-files ul li{
+	list-style-type:none;
+}
+
+#unauthorized {
+	display:none;
+}
+
+#authorized{
+	display:block;
+}
+
+
+
+
