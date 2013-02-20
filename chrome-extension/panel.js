@@ -1,7 +1,6 @@
 //new hotfix
     var hotfix = new Hotfix();
     var local = hotfix.getLocal();
-    var resourcePaths = [];
     var repoPaths = [];
 //get accessToken from local storage
     var token = local.getData('accessToken');
@@ -36,35 +35,119 @@
     });
 
 
-//insert text node that displays the current username
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	//insert text node that displays the current username
     var showUser = document.createTextNode('Username: ' + username);
     document.getElementById('username').appendChild(showUser);
 
-//updates the resource list of the files that have been edited    
+
+	
+	
+	//updates the resource list of the files that have been edited    
     chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
-        document.getElementById('changed-files').innerHTML = '';
-        var showResource = request.showResource;
-		console.log(showResource);
         if (request.greeting == "show resources")
-            var resourceList = document.createElement('ul');
-            resourcePaths = [];
-			for (i=0; i<showResource.length;i++){
-                var link = document.createElement('li');
-                link.innerHTML = ('File URL:' + showResource[i].key);
-                resourceList.appendChild(link);    
-                
-				var a = document.createElement('a');
-                a.href = showResource[i].key;
-                var resourcePath = a.pathname;
+			document.getElementById('changed-files').innerHTML = '';
+			
+			resourceArray = request.showResource;
+            var resourceList = document.createElement('div');
+			for (i=0; i<resourceArray.length;i++){
+                resourceArray[i].id = i;
+				var resourceLink = document.createElement('a');
+                resourceLink.href = resourceArray[i].url;
+				resourceLink.target = '_blank';
+                var resourcePath = resourceLink.pathname;
+				var hostName = resourceLink.hostname;
                 if (resourcePath.charAt(0) == "/") resourcePath = resourcePath.substr(1);
-				var addResource = {};
-                addResource.path = resourcePath;
-                addResource.content = showResource[i].content;
-                resourcePaths.push(addResource);
+                resourceArray[i].path = resourcePath;
+				
+				var resourceDiv = document.createElement('div');
+				resourceDiv.id = 'resource-' + i;
+				var domain = document.createElement('div');
+				var domainText = document.createTextNode(hostName);
+				domain.appendChild(domainText);
+				resourceDiv.appendChild(domain);
+				var link = document.createElement('li');
+				var linkText = document.createTextNode(resourcePath);
+				resourceLink.appendChild(linkText);
+				link.appendChild(resourceLink);
+				var removeLink = document.createElement('span');
+				removeLink.className = 'remove-link';
+				link.appendChild(removeLink);
+				resourceDiv.appendChild(link); 
+				var commitBox = document.createElement('div');
+				commitBox.className = 'commit-box';
+				var commitInputLabel = document.createElement('label');
+				var inputLabelText = document.createTextNode('Commit message:');
+				commitInputLabel.appendChild(inputLabelText);
+				commitBox.appendChild(commitInputLabel);
+				
+				var commitInput = document.createElement('input');
+				commitInput.id = 'commit-message-' + i;
+				var commitButton = document.createElement('button');
+				commitButton.className = 'commit-button';
+				var buttonText = document.createTextNode('Commit');
+				commitButton.appendChild(buttonText);
+				commitBox.appendChild(commitInput);
+				commitBox.appendChild(commitButton);
+				resourceDiv.appendChild(commitBox);
+                resourceList.appendChild(resourceDiv);
+				
+				
             }
-        console.log(resourcePaths);
+													
+       
         document.getElementById('changed-files').appendChild(resourceList);
-    }); 
+	  var elements = document.getElementsByClassName('commit-button');
+	  var removeLinks = document.getElementsByClassName('remove-link');
+	  console.log(resourceArray);
+	  for (var i = 0; i < removeLinks.length; i++) {
+			
+			removeLinks[i].addEventListener('click', function(e) {
+				var parentId = this.parentNode.parentNode.id;
+				var id = parentId.replace('resource-','');
+				for (var key in resourceArray) {
+						if (resourceArray[key].hasOwnProperty('id') && resourceArray[key].id == id) {
+							delete resourceArray[key]; 
+							console.log(resourceArray);
+							this.parentNode.parentNode.remove();
+						}            
+						
+					}
+			
+			});
+	  
+	  
+	  }
+	for (var i = 0; i < elements.length; i++) {
+		elements[i].addEventListener('click', function() {
+		var parentId = this.parentNode.parentNode.id;
+		var id = parentId.replace('resource-','');
+		var commitMessageInput = 'commit-message-'+id;
+        commitMessage = document.getElementById(commitMessageInput).value;
+				var repoList = document.getElementById('repo-list');
+				var branchList = document.getElementById('branch-list');
+				var repoName = repoList.options[repoList.selectedIndex].text;
+				var branch = branchList.options[branchList.selectedIndex].text;
+				var repo = github.getRepo(username,repoName);
+				var rLength = resourceArray.length;
+			repo.write(branch,resourceArray[id].path, resourceArray[id].content,commitMessage,function(err){});
+				
+		});
+}
+
+   }); 
 
 //get the repo details for the selected repo
   document.getElementById('repo-list').addEventListener('change',function(){
@@ -92,14 +175,14 @@
             repoPath.sha = tree[obj].sha;
             repoPaths.push(repoPath);
         }
-        var iLength = resourcePaths.length;
+        var iLength = resourceArray.length;
         var jLength = repoPaths.length;
         for(i=0; i<iLength;i++){
             for(j=0; j<jLength;j++){
-                if(resourcePaths[i].path == repoPaths[j].path){
+                if(resourceArray[i].path == repoPaths[j].path){
                     alert('I found a match!');
                 }
-                else console.log(resourcePaths[i].path);
+                else console.log(resourceArray[i].path);
             }
         
         }
@@ -114,21 +197,8 @@
 
   }
 
-  
-    document.getElementById('push').addEventListener('click',function(){
-        commitMessage = document.getElementById('commit-message').value;
-				console.log(resourcePaths);
-				var repoList = document.getElementById('repo-list');
-				var branchList = document.getElementById('branch-list');
-				var repoName = repoList.options[repoList.selectedIndex].text;
-				var branch = branchList.options[branchList.selectedIndex].text;
-				var repo = github.getRepo(username,repoName);
-				var rLength = resourcePaths.length;
-				for(i=0; i<rLength;i++){
-					repo.write(branch,resourcePaths[i].path, resourcePaths[i].content,commitMessage,function(err){
-					});
-				}
-	});
+
+ 
   
   
 //receive message from eventPage.js to reload the panel after successful authentication
