@@ -2,6 +2,7 @@
     var hotfix = new Hotfix();
     var local = hotfix.getLocal();
     var repoPaths = [];
+	var resourceArray = [];
 //get accessToken from local storage
     var token = local.getData('accessToken');
     var repo;
@@ -35,18 +36,6 @@
     });
 
 
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	//insert text node that displays the current username
     var showUser = document.createTextNode('Username: ' + username);
@@ -57,71 +46,120 @@
 	
 	//updates the resource list of the files that have been edited    
     chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
-        if (request.greeting == "show resources")
-			document.getElementById('changed-files').innerHTML = '';
-			
-			resourceArray = request.showResource;
-            var resourceList = document.createElement('div');
+        if (request.greeting == "show resources") {
+			document.getElementById('edited-resources').innerHTML = '';
+			var resourceArray = request.showResource;
+			console.log(resourceArray);
+			//create container div for holding the resources
+            var editedResources = document.getElementById('edited-resources');
 			for (i=0; i<resourceArray.length;i++){
-                resourceArray[i].id = i;
-				var resourceLink = document.createElement('a');
-                resourceLink.href = resourceArray[i].url;
-				resourceLink.target = '_blank';
-                var resourcePath = resourceLink.pathname;
-				var hostName = resourceLink.hostname;
-                if (resourcePath.charAt(0) == "/") resourcePath = resourcePath.substr(1);
+               
+				resourceArray[i].id = i;
+				
+				// create an achor element and set the href and target 
+				var a = document.createElement('a');
+				a.href = resourceArray[i].url;
+				a.target = '_blank';
+				
+				
+				//extract the path and hostname from the anchor element
+				var resourcePath = a.pathname;
+				var hostName = a.hostname;
+				
+				//remove the leading / from the resourcePath and add it to the resourceArray
+				if (resourcePath.charAt(0) == "/") {
+				resourcePath = resourcePath.substr(1);
+				}
+				
                 resourceArray[i].path = resourcePath;
 				
+				
+				//create a div to hold all the data about this resource and give it an id
 				var resourceDiv = document.createElement('div');
 				resourceDiv.id = 'resource-' + i;
+				
+				
+				
+				
+				
+				//create a div to hold the domain this resource came from and add the domain text to it
 				var domain = document.createElement('div');
 				var domainText = document.createTextNode(hostName);
 				domain.appendChild(domainText);
+				
+				
+				//add the domain div to the container div
 				resourceDiv.appendChild(domain);
-				var link = document.createElement('li');
+				
+				//create an li element and add the full url to it
+				var li = document.createElement('li');
 				var linkText = document.createTextNode(resourcePath);
-				resourceLink.appendChild(linkText);
-				link.appendChild(resourceLink);
-				var removeLink = document.createElement('span');
-				removeLink.className = 'remove-link';
-				link.appendChild(removeLink);
-				resourceDiv.appendChild(link); 
-				var commitBox = document.createElement('div');
-				commitBox.className = 'commit-box';
+				
+				//append the anchor element to the li element we just created
+				a.appendChild(linkText);
+				li.appendChild(a);
+				
+				
+				//create a span to hold the remove icon and give it a class 
+				var removeSpan = document.createElement('span');
+				removeSpan.className = 'remove-resource';
+				
+				//append the span to the li element
+				li.appendChild(removeSpan);
+				
+				//apend the entire li element to the container div
+				resourceDiv.appendChild(li); 
+				
+				//create a div to hold the commit label, input(commit message), and commit button, and name it
+				var commitWrapper = document.createElement('div');
+				commitWrapper.className = 'commit-wrapper';
+				
+				//create a label for the input element, add text to it, and append it to the wrapper
 				var commitInputLabel = document.createElement('label');
 				var inputLabelText = document.createTextNode('Commit message:');
 				commitInputLabel.appendChild(inputLabelText);
-				commitBox.appendChild(commitInputLabel);
+				commitWrapper.appendChild(commitInputLabel);
 				
+				
+				//create the actual input element and give it an id so we can access it later
 				var commitInput = document.createElement('input');
 				commitInput.id = 'commit-message-' + i;
+				
+				//create the commit button, give it some text, and a class
 				var commitButton = document.createElement('button');
-				commitButton.className = 'commit-button';
 				var buttonText = document.createTextNode('Commit');
+				commitButton.className = 'commit-button';
 				commitButton.appendChild(buttonText);
-				commitBox.appendChild(commitInput);
-				commitBox.appendChild(commitButton);
-				resourceDiv.appendChild(commitBox);
-                resourceList.appendChild(resourceDiv);
+				
+				//append the commit input and button to the commit wrapper div
+				commitWrapper.appendChild(commitInput);
+				commitWrapper.appendChild(commitButton);
+				
+				//append the commit wraper div to the main container div
+				resourceDiv.appendChild(commitWrapper);
+				
+				//finally append the resource container to the main div. 
+                editedResources.appendChild(resourceDiv);
 				
 				
             }
 													
-       
-        document.getElementById('changed-files').appendChild(resourceList);
+	
 	  var elements = document.getElementsByClassName('commit-button');
-	  var removeLinks = document.getElementsByClassName('remove-link');
-	  console.log(resourceArray);
-	  for (var i = 0; i < removeLinks.length; i++) {
+	  var removeResource = document.getElementsByClassName('remove-resource');
+	  for (var i = 0; i < removeResource.length; i++) {
 			
-			removeLinks[i].addEventListener('click', function(e) {
+			removeResource[i].addEventListener('click', function() {
+			
 				var parentId = this.parentNode.parentNode.id;
+			
 				var id = parentId.replace('resource-','');
 				for (var key in resourceArray) {
 						if (resourceArray[key].hasOwnProperty('id') && resourceArray[key].id == id) {
-							delete resourceArray[key]; 
-							console.log(resourceArray);
 							this.parentNode.parentNode.remove();
+							alert(id);
+							chrome.extension.sendMessage({greeting: "remove resource", data: id}, function(response) {});
+							
 						}            
 						
 					}
@@ -133,6 +171,7 @@
 	for (var i = 0; i < elements.length; i++) {
 		elements[i].addEventListener('click', function() {
 		var parentId = this.parentNode.parentNode.id;
+		var parentNode = this.parentNode.parentNode;
 		var id = parentId.replace('resource-','');
 		var commitMessageInput = 'commit-message-'+id;
         commitMessage = document.getElementById(commitMessageInput).value;
@@ -142,11 +181,23 @@
 				var branch = branchList.options[branchList.selectedIndex].text;
 				var repo = github.getRepo(username,repoName);
 				var rLength = resourceArray.length;
-			repo.write(branch,resourceArray[id].path, resourceArray[id].content,commitMessage,function(err){});
+			repo.write(branch,resourceArray[id].path, resourceArray[id].content,commitMessage,function(err){
+			if(err){
+			console.log(err);
+			}
+			else{
+			parentNode.remove();
+			chrome.extension.sendMessage({greeting: "remove resource", data: id}, function(response) {});
+			}
+			
+			});
 				
 		});
 }
-
+}
+   
+   
+   sendResponse({updatedArray : resourceArray });
    }); 
 
 //get the repo details for the selected repo
@@ -159,35 +210,12 @@
         var repo = github.getRepo(username, repoName);
 		document.getElementById('branch-wrapper').style.display = 'block';
 		repo.listBranches(function(err, branches){
-			 
 			 var select = document.getElementById('branch-list');
 			for(var i=0; i < branches.length; i++){
 				var branch = branches[i];
 				select.options.add(new Option(branch))
 			}
-		})
-		
-        repo.getTree('master?recursive=true', function(err, tree) {
-        console.log(tree);
-        for (var obj in tree){
-            var repoPath ={};
-            repoPath.path = tree[obj].path;
-            repoPath.sha = tree[obj].sha;
-            repoPaths.push(repoPath);
-        }
-        var iLength = resourceArray.length;
-        var jLength = repoPaths.length;
-        for(i=0; i<iLength;i++){
-            for(j=0; j<jLength;j++){
-                if(resourceArray[i].path == repoPaths[j].path){
-                    alert('I found a match!');
-                }
-                else console.log(resourceArray[i].path);
-            }
-        
-        }
-      });
-        console.log(repoPaths);
+		});
     }
 	else{
 		document.getElementById('branch-wrapper').style.display = 'none';
@@ -204,8 +232,9 @@
 //receive message from eventPage.js to reload the panel after successful authentication
   chrome.extension.onMessage.addListener(
     function(request, sender, sendResponse) {
-      if (request.greeting == "reload_panel")
-         document.location.reload();
+      if (request.greeting == "reload_panel"){
+		document.location.reload();
+		}
     }); 
   
 //sends a message to eventPage.js to open a new window with the github authorization url

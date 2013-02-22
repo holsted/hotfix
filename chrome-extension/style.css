@@ -5,7 +5,7 @@ body{
 
 }
 
-.remove-link {
+.remove-resource {
 	background:url(close.png) left top; 
 	width:16px; 
 	height:16px;
@@ -16,6 +16,95 @@ body{
 
 }
 
+#sidebar-header{
+	border-top: 1px solid rgb(68, 128, 200);
+	background-image: -webkit-gradient(linear, left top, left bottom, from(#5C93D5),to(#1553AA));
+	margin-top:1px;
+	height:36px;
+	line-height:34px;
+	
+}
+
+#hotfix-title{
+	position:absolute;
+	color: white;
+	text-shadow: rgba(0, 0, 0, 0.33) 0 1px 0;
+	font-weight: bold;
+	font-family: Lucida Grande, sans-serif;
+	font-size: 11px;
+	line-height: 11px;
+	margin-top:2px;
+	top:10px;
+
+}
+
+#octocat {
+	float:left;
+	width:40%;
+	padding:20px;
+}
+
+.octocat{
+    max-width: 100%;
+    height: auto;
+}
+
+#auth {
+	float:left;
+	width:50%;
+	padding-left:10px;
+}
+
+.instructions{
+	font-family: "Helvetica Neue", "Helvetica", sans-serif;
+	font-size: 21px;
+}
+
+
+#authorize-button{
+	display:block;
+	font-size:20px;
+	padding:10px 20px 10px 20px;
+	margin: 30px auto 0 auto;
+	cursor:pointer;
+	background-image: -webkit-linear-gradient(#8add6d, #60b044);
+	border-radius: 5px;
+	color: #fff;
+	text-shadow: 0 -1px 0 rgba(0,0,0,0.25);
+	border:1px solid;
+	border-color: #5ca941;
+	outline:none;	
+
+}
+
+#authorize-button:hover{
+	background-image: -webkit-linear-gradient(#82db63, #5ba740);
+}
+
+#authorize-button:active{
+	background-color:#569e3d;
+	background-image:none;
+	border-color:#418737;
+}
+
+
+
+
+#sidebar-title{
+	margin-top:1px;
+	border-top: 1px solid rgb(68, 128, 200);
+	padding: 0px 5px 0px 5px;
+}
+
+#hotfix-icon{
+	float: left;
+	width: 32px;
+	height: 32px;
+	margin-top: 1px;
+	margin-right: 3px;
+}
+
+
 #sidebar {
 	float:left;
 	width:200px;
@@ -23,15 +112,10 @@ body{
 	height:700px;
 	overflow:none;
 	border-right: 1px solid rgb(64%, 64%, 64%);
-	margin-top:-21px;
-	padding: 0 5px 0 5px;
+	
+	
 }
 
-#sidebar-header{
-	height:56px;
-	line-height:54px;
-	font-size:15px;
-}
 
 #branch-wrapper{
 	display:none;

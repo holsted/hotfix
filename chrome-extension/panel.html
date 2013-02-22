@@ -7,18 +7,26 @@
 	
 	
 	<div id="unauthorized">
-	<div id="authorize-instructions">
-		Hey there. Before you can get started you need to authorize this extension to access your GitHub repos. Click the authorize button below and you'll be all set. 
-	</div>
-	<button id="authorize-button">Authorize Me!</button>
-
+			<div id = "octocat">
+				<img class = "octocat" src = "img/octocat.png" />
+			</div>
+		<div id = "auth">
+			<span class = "instructions">
+				<p> In order to get started we need to authorize this extension to access your GitHub repos. </p>
+			</span>
+			<button id="authorize-button">Authorize with GitHub</button>
+		</div>
+	
 	</div>
 	
 	<div id="authorized">
 		<div id = "sidebar">
 			<div id="sidebar-header">
-				<div id="extension-title">
-					<h1>Hotfix</h1>
+				<div id="sidebar-title">
+					<img id = "hotfix-icon" src = "icon32.png" />
+					<span id="hotfix-title">
+						Hotfix
+					</span>
 				</div>
 			</div>
 			<div id="username"></div><button id="logout">Logout</button>
@@ -37,7 +45,7 @@
 			</div>
 		</div>
 		
-		<div id="changed-files">
+		<div id="edited-resources">
 		Edited Files <br />
 		
 		</div>

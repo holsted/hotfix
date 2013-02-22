@@ -20,10 +20,23 @@ chrome.extension.onMessage.addListener(
   function(request, sender, sendResponse) {
    panelId = sender.tab.id;
    if (request.greeting == "update resources")
-            chrome.tabs.sendMessage(sender.tab.id, {greeting: "show resources", showResource: request.data}, function(response) {});
+            chrome.tabs.sendMessage(sender.tab.id, {greeting: "show resources", showResource: request.data}, function(response) {
+			
+			chrome.tabs.sendMessage(sender.tab.id, {greeting: "sync array", data: response.updatedArray}, function(response) {});
+			
+			});
 
   });
+  
+  chrome.extension.onMessage.addListener(
+  function(request, sender, sendResponse) {
+   if (request.greeting == "remove resource")
+            chrome.tabs.sendMessage(sender.tab.id, {greeting: "update array", data: request.data}, function(response) {});
 
+  });
+  
+  
+  
 
 
   chrome.extension.onMessage.addListener(
