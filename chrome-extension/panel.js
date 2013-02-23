@@ -21,9 +21,9 @@
     
 //set up a user
     var user = github.getUser();
-    var panel = hotfix.getPanel();
 //get the username from local storage
     var username = local.getData('username');
+	var avatar = local.getData('avatar');
 
 //list the current users repo
     listRepos = user.userRepos(username, function(err, repos){
@@ -38,8 +38,20 @@
 
 	
 	//insert text node that displays the current username
-    var showUser = document.createTextNode('Username: ' + username);
-    document.getElementById('username').appendChild(showUser);
+    var showUser = document.createElement('li');
+	var userName = document.createTextNode(username);
+	var userLink = document.createElement('a');
+	var avatarImg = document.createElement('img');
+	avatarImg.src = avatar;
+	showUser.appendChild(avatarImg);
+	showUser.appendChild(userLink);
+	userLink.appendChild(userName);
+	userLink.href = "https://www.github.com/"+username;
+	userLink.target = '_blank';
+    
+	
+	
+	document.getElementById('username').appendChild(showUser);
 
 
 	
@@ -65,6 +77,8 @@
 				//extract the path and hostname from the anchor element
 				var resourcePath = a.pathname;
 				var hostName = a.hostname;
+				var host = hostName.replace(/^www\./,'');
+				var fileName = resourcePath.substring(resourcePath.lastIndexOf('/')+1);
 				
 				//remove the leading / from the resourcePath and add it to the resourceArray
 				if (resourcePath.charAt(0) == "/") {
@@ -77,26 +91,35 @@
 				//create a div to hold all the data about this resource and give it an id
 				var resourceDiv = document.createElement('div');
 				resourceDiv.id = 'resource-' + i;
+				resourceDiv.className = "resource";
 				
 				
 				
 				
 				
-				//create a div to hold the domain this resource came from and add the domain text to it
-				var domain = document.createElement('div');
-				var domainText = document.createTextNode(hostName);
-				domain.appendChild(domainText);
+				//create a span to hold the source(domain) this resource came from and add the domain text to it
+				var source = document.createElement('div');
+				source.className = 'source';
+				var domainText = document.createTextNode(host);
+				var fileText = document.createTextNode('File: ' + fileName);
+				var file = document.createElement('li');
+				file.appendChild(fileText);
+				file.className = 'file';
+				source.appendChild(domainText);
 				
 				
-				//add the domain div to the container div
-				resourceDiv.appendChild(domain);
 				
+				
+				//add the source div to the container div
+				resourceDiv.appendChild(source);
+				resourceDiv.appendChild(file);
 				//create an li element and add the full url to it
 				var li = document.createElement('li');
 				var linkText = document.createTextNode(resourcePath);
-				
+				var fileLabel = document.createTextNode('Full path: ');
 				//append the anchor element to the li element we just created
 				a.appendChild(linkText);
+				li.appendChild(fileLabel);
 				li.appendChild(a);
 				
 				
@@ -105,7 +128,7 @@
 				removeSpan.className = 'remove-resource';
 				
 				//append the span to the li element
-				li.appendChild(removeSpan);
+				source.appendChild(removeSpan);
 				
 				//apend the entire li element to the container div
 				resourceDiv.appendChild(li); 
@@ -116,14 +139,17 @@
 				
 				//create a label for the input element, add text to it, and append it to the wrapper
 				var commitInputLabel = document.createElement('label');
-				var inputLabelText = document.createTextNode('Commit message:');
+				var inputLabelText = document.createTextNode('Commit message: ');
 				commitInputLabel.appendChild(inputLabelText);
 				commitWrapper.appendChild(commitInputLabel);
+				
+				
 				
 				
 				//create the actual input element and give it an id so we can access it later
 				var commitInput = document.createElement('input');
 				commitInput.id = 'commit-message-' + i;
+				commitInput.className = 'commit-input';
 				
 				//create the commit button, give it some text, and a class
 				var commitButton = document.createElement('button');
@@ -157,7 +183,7 @@
 				for (var key in resourceArray) {
 						if (resourceArray[key].hasOwnProperty('id') && resourceArray[key].id == id) {
 							this.parentNode.parentNode.remove();
-							alert(id);
+							
 							chrome.extension.sendMessage({greeting: "remove resource", data: id}, function(response) {});
 							
 						}            
@@ -208,7 +234,7 @@
 
     if(repoName){
         var repo = github.getRepo(username, repoName);
-		document.getElementById('branch-wrapper').style.display = 'block';
+		document.getElementById('branches').style.display = 'block';
 		repo.listBranches(function(err, branches){
 			 var select = document.getElementById('branch-list');
 			for(var i=0; i < branches.length; i++){
@@ -218,7 +244,7 @@
 		});
     }
 	else{
-		document.getElementById('branch-wrapper').style.display = 'none';
+		document.getElementById('branches').style.display = 'none';
 	}
     
   });

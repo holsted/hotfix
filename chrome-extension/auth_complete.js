@@ -37,14 +37,19 @@ function authorize(){
     xhr.send();
     xhr.onload = function() {
         
-// Save the username to local storage
+// Save a few user details to local storage
         var parseAuthorization = JSON.parse(xhr.responseText);
-        var authId = parseAuthorization.id;
         var user = parseAuthorization.login;
+		var avatar = parseAuthorization.avatar_url;
+		
         local.setData('username', user);
+		local.setData('avatar', avatar);
 // Send a message to eventPage.js, which sends a message to panel.js, to reload the page
-        chrome.extension.sendMessage({greeting: "reload_background"}, function(response){});
-        callback();
+        chrome.extension.sendMessage({greeting: "reload_background"}, function(response){
+		
+		 callback();
+		});
+       
     };
     xhr.onerror = function() {
         alert('Sorry, there was an error making the request.');
@@ -81,7 +86,6 @@ function parseAccessToken(response) {
 
 // Da callback. Once we get there the Oauth flow is complete and we can close the open window. Need to add error handling back in 
 function callback(error) {
-   
     // The following works around bug: crbug.com/84201
     window.open('', '_self', '');
     window.close();

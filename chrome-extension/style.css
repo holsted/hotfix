@@ -1,26 +1,109 @@
 body{
 	margin:0;
 	padding:0;
+	font-family: "Helvetica", Arial, sans-serif;
+	font-size:12px;
 	
 
 }
 
+select {
+    padding:3px;
+    margin: 0;
+    -webkit-box-shadow: 
+        0 2px 0 #ccc,
+        0 -1px #fff inset;
+    background: #f9f9f9;
+    color: #555;
+    outline:none;
+	border:none;
+    display: inline-block;
+    -webkit-appearance:none; 
+    cursor:pointer;
+	padding-right:40px;
+	min-width:160px;
+}
+
+#edited-resources{
+	padding: 10px 0px 10px 15px;
+	display:inline-block;
+	position:absolute;
+	left:200;
+	
+}
+
+.file {
+	display:block;
+}
+
+.source {
+	color:#555;
+	font-weight:bold;
+	padding-right:5px;
+	width:100%;
+	overflow:auto;
+	margin-bottom:5px;
+	font-size:18px;
+	vertical-align:middle;
+}
+
+.commit-input {
+	width:400px;
+	outline:none;
+	margin: 0px 10px 0px 5px;
+}
+
+.commit-wrapper{
+	padding-left: 10px;
+}
+
+.resource {
+	float:left;
+	padding:5px 0px 15px 0px;
+	border-bottom:1px dotted #ccc;
+	margin-bottom:10px;
+}
+
+.resource li{
+	list-style-type:none;
+	display:block;
+	margin-bottom:5px;
+	padding-left:10px;
+	
+}
+
 .remove-resource {
 	background:url(close.png) left top; 
-	width:16px; 
-	height:16px;
+	width:14px; 
+	height:14px;
 	display:inline-block;
-	margin-left:15px;
-	vertical-align:middle;
+	margin-left:10px;
 	cursor:pointer;
+	vertical-align:middle;
 
 }
+
+.commit-button {
+	display:block;
+	clear:both;
+	font-size:13px;
+	padding:4px 8px 4px 8px;
+	cursor:pointer;
+	background-image: -webkit-linear-gradient(#8add6d, #60b044);
+	border-radius: 5px;
+	color: #fff;
+	text-shadow: 0 -1px 0 rgba(0,0,0,0.25);
+	border:1px solid;
+	border-color: #5ca941;
+	outline:none;	
+}
+
 
 #sidebar-header{
 	border-top: 1px solid rgb(68, 128, 200);
 	background-image: -webkit-gradient(linear, left top, left bottom, from(#5C93D5),to(#1553AA));
 	margin-top:1px;
-	height:36px;
+	height:35px;
 	line-height:34px;
 	
 }
@@ -56,8 +139,9 @@ body{
 }
 
 .instructions{
-	font-family: "Helvetica Neue", "Helvetica", sans-serif;
+	font-family: "Helvetica", Arial, sans-serif;
 	font-size: 21px;
+	color:#333;
 }
 
 
@@ -74,7 +158,6 @@ body{
 	border:1px solid;
 	border-color: #5ca941;
 	outline:none;	
-
 }
 
 #authorize-button:hover{
@@ -88,25 +171,8 @@ body{
 }
 
 
-
-
-#sidebar-title{
-	margin-top:1px;
-	border-top: 1px solid rgb(68, 128, 200);
-	padding: 0px 5px 0px 5px;
-}
-
-#hotfix-icon{
-	float: left;
-	width: 32px;
-	height: 32px;
-	margin-top: 1px;
-	margin-right: 3px;
-}
-
-
 #sidebar {
-	float:left;
+	display:inline-block;
 	width:200px;
 	background-color: rgb(214, 221, 229);
 	height:700px;
@@ -117,19 +183,96 @@ body{
 }
 
 
-#branch-wrapper{
-	display:none;
-}
-
-#changed-files li{
-	list-style-type:none;
-	display:inline-block;
-	clear:left;
-	vertical-align:middle;
-	margin-bottom:2px;
+#sidebar-title{
+	margin-top:1px;
+	border-top: 1px solid rgb(68, 128, 200);
+	padding: 0px 5px 0px 5px;
 	
 }
 
+#sidebar-body{
+	font-size:12px;
+	padding:0px 10px 0px 10px;
+}
+
+#sidebar-body h2{
+	font-size:11px;
+	color: rgb(92, 110, 129);
+	font-weight: bold;
+	text-shadow: rgba(255, 255, 255, 0.75) 0 1px 0;
+	font-family: Lucida Grande, sans-serif;
+}
+
+
+#hotfix-icon{
+	float: left;
+	width: 32px;
+	height: 32px;
+	margin-top: 0px;
+	margin-right: 3px;
+}
+
+
+
+#username li {
+	list-style-type:none;
+	height:20px;
+	margin: 0px 5px 0px 5px;
+	float:left;
+}
+
+#username li a:hover{
+	color: #4183c4;
+	text-decoration: none;
+	
+}
+
+#username li a{
+	color: rgb(92, 110, 129);
+	font-size:14px;
+	text-decoration:none;
+	line-height:14px;
+	text-shadow: 0 1px 0 #dedede;
+	font-family: "Helvetica" , arial, sans-serif;
+	font-weight:bold;
+	float:left;
+	padding:4px 2px 0px 10px;
+
+
+}
+
+#username img{
+	height:20px;
+	float:left;
+	-webkit-box-shadow: 0px 1px 2px 0px #999;
+}
+
+#user {
+	margin: 5px 0px 15px 0px;
+}
+
+#logout{
+	color: rgb(92, 110, 129);
+	cursor:pointer;
+	font-family: "Helvetica" , arial, sans-serif;
+	font-size:10px;
+	display:inline-block;
+	padding-top:5px;
+}
+
+#logout:hover{
+	color: #4183c4;
+	
+}
+
+
+
+#branches{
+	display:none;
+}
+
+
+	
 #unauthorized {
 	display:none;
 }

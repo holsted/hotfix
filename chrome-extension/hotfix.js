@@ -1,5 +1,4 @@
 
-
 (function() {
   
   var Hotfix;
@@ -38,26 +37,12 @@
         return localStorage['hotfix'];
       };
     };
-    
-    Hotfix.Panel = function(){
-      
-      //try to match the edited resource to the file in github
-      this.matchPaths = function(repoPath, resourcePaths, cb){
-            console.log('matching');
-            return('matching');
-      };
-    
-	};
 
     
     //top level API
     
     this.getLocal = function(){
       return new Hotfix.Local();
-    }
-    
-    this.getPanel = function(){
-      return new Hotfix.Panel();
     }
   
   };
