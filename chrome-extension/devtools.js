@@ -38,7 +38,6 @@ chrome.devtools.panels.create("Hotfix", "/icon48.png", "/panel.html", function(e
     chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
         if (request.greeting == "update array"){
 		var id = request.data;
-		console.log(id);
 		for (var key in resourceArray) {
 						if (resourceArray[key].hasOwnProperty('id') && resourceArray[key].id == id) {
 							resourceArray.splice(key,1);

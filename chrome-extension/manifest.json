@@ -10,7 +10,7 @@
 	"https://github.com/robots.txt",
 	"https://api.github.com/",
 	"https://github.com/logout",
-	"http://hotfix.nodejitsu.com/",
+	"https://hotfix.nodejitsu.com/",
 	"tabs",
 	"management"
   ],
@@ -20,7 +20,7 @@
   },
   "content_scripts": [
   {
-    "matches": ["http://hotfix.nodejitsu.com/*"],
+    "matches": ["https://hotfix.nodejitsu.com/*"],
     "js": ["/hotfix_inject.js"],
     "run_at": "document_start"
   }

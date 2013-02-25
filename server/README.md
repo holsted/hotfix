@@ -68,29 +68,5 @@ Setup your Gatekeeper
    $ node server.js
    ```
 
-Deploy on Heroku
-==========
 
-1. Create a new Heroku app
-   
-   ```
-   cake heroku:create
-   ```
-
-2. Rename it (optional)
-   
-   ```
-   heroku apps:rename NEW_NAME
-   ```
-
-3. Provide OAUTH_CLIENT_ID and OAUTH_CLIENT_SECRET:
-
-   ```
-   cake -c OAUTH_CLIENT_ID -s OAUTH_CLIENT_SECRET heroku:config
-   ```
-
-4. Push changes to heroku
-
-   ```
-   cake heroku:push
    ```

@@ -3,6 +3,7 @@ body{
 	padding:0;
 	font-family: "Helvetica", Arial, sans-serif;
 	font-size:12px;
+	color: rgb(110, 116, 128);
 	
 
 }
@@ -10,9 +11,7 @@ body{
 select {
     padding:3px;
     margin: 0;
-    -webkit-box-shadow: 
-        0 2px 0 #ccc,
-        0 -1px #fff inset;
+    -webkit-box-shadow:  0 2px 0 #ccc;
     background: #f9f9f9;
     color: #555;
     outline:none;
@@ -20,64 +19,109 @@ select {
     display: inline-block;
     -webkit-appearance:none; 
     cursor:pointer;
-	padding-right:40px;
+	padding-right:20px;
 	min-width:160px;
 }
 
+
 #edited-resources{
-	padding: 10px 0px 10px 15px;
-	display:inline-block;
+	
 	position:absolute;
-	left:200;
+	top:0;
+	left:200px;
+	right:0;
+	
+	
 	
 }
 
 .file {
 	display:block;
 }
+.file-name {
+	font-weight:bold;
+	color: rgb(110, 116, 128);
+}
+
+.overlay{
+	position:absolute;
+	top:0;
+	left:0;
+	width:100%;
+	height:100%;
+	background-color:rgba(245, 245, 245, 0.75);
+}
 
 .source {
-	color:#555;
-	font-weight:bold;
+	color: rgb(110, 116, 128);
+	font-size: 16px;
+	line-height: 20px;
 	padding-right:5px;
 	width:100%;
 	overflow:auto;
 	margin-bottom:5px;
-	font-size:18px;
+	font-weight:bold;
 	vertical-align:middle;
 }
 
-.commit-input {
-	width:400px;
+.commit-textarea {
+	display:block;
+	width:500px;
+	height:125px;
 	outline:none;
-	margin: 0px 10px 0px 5px;
+	margin: 4px 0px 0px 0px;
+	border:1px solid #ccc;
+	border-radius:3px;
+	padding:2px;
+	-webkit-box-shadow: 1px 1px 2px #eee;
+	-webkit-appearance:none;
+}
+
+.commit-wrapper input, .commit-wrapper label{
+	vertical-align:middle;
 }
 
 .commit-wrapper{
-	padding-left: 10px;
+	padding-left: 15px;
 }
+
+
 
 .resource {
 	float:left;
-	padding:5px 0px 15px 0px;
+	padding:15px 0px 15px 20px;
 	border-bottom:1px dotted #ccc;
-	margin-bottom:10px;
+	position:relative;
+	width:97%;
 }
+
+#success-image{
+	background: url("img/check.png") no-repeat center center;
+	position:absolute;
+	opacity:0;
+	transition: opacity 1s linear;
+	-webkit-transition: opacity 1s linear;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+}
+
 
 .resource li{
 	list-style-type:none;
 	display:block;
-	margin-bottom:5px;
-	padding-left:10px;
+	margin-bottom:6px;
+	padding-left:15px;
 	
 }
 
 .remove-resource {
-	background:url(close.png) left top; 
+	background:url(img/close.png) no-repeat left top; 
 	width:14px; 
 	height:14px;
 	display:inline-block;
-	margin-left:10px;
+	margin-left:6px;
 	cursor:pointer;
 	vertical-align:middle;
 
@@ -86,18 +130,33 @@ select {
 .commit-button {
 	display:block;
 	clear:both;
-	font-size:13px;
-	padding:4px 8px 4px 8px;
+	font-size:16px;
+	padding:6px 12px 6px 12px;
 	cursor:pointer;
-	background-image: -webkit-linear-gradient(#8add6d, #60b044);
-	border-radius: 5px;
-	color: #fff;
-	text-shadow: 0 -1px 0 rgba(0,0,0,0.25);
+	background-image: -webkit-linear-gradient(#f5f5f5, #d7d7d7);
 	border:1px solid;
-	border-color: #5ca941;
+	border-radius:3px;
+	border-color: #ddd;
 	outline:none;	
+	margin:0;
+	margin-top:10px;
+	font-size:11px;
+	color: rgb(92, 110, 129);
+	font-weight: bold;
+	text-shadow: rgba(255, 255, 255, 0.75) 0 1px 0;
+	font-family: Lucida Grande, sans-serif;
+
 }
 
+.commit-button:hover{
+	background-image: -webkit-linear-gradient(#f0f0f0, #ddd);
+}
+
+.commit-button:active{
+	background-color:#ddd;
+	background-image:none;
+	border-color:#aaa;
+}
 
 #sidebar-header{
 	border-top: 1px solid rgb(68, 128, 200);
@@ -172,14 +231,11 @@ select {
 
 
 #sidebar {
-	display:inline-block;
+	float:left;
 	width:200px;
 	background-color: rgb(214, 221, 229);
 	height:700px;
-	overflow:none;
 	border-right: 1px solid rgb(64%, 64%, 64%);
-	
-	
 }
 
 
@@ -217,7 +273,7 @@ select {
 #username li {
 	list-style-type:none;
 	height:20px;
-	margin: 0px 5px 0px 5px;
+	margin: 0px 2px 0px 4px;
 	float:left;
 }
 
@@ -236,19 +292,15 @@ select {
 	font-family: "Helvetica" , arial, sans-serif;
 	font-weight:bold;
 	float:left;
-	padding:4px 2px 0px 10px;
+	padding: 1px 2px 0px 0px;
 
 
 }
 
-#username img{
-	height:20px;
-	float:left;
-	-webkit-box-shadow: 0px 1px 2px 0px #999;
-}
 
 #user {
 	margin: 5px 0px 15px 0px;
+	overflow:hidden;
 }
 
 #logout{
@@ -257,7 +309,6 @@ select {
 	font-family: "Helvetica" , arial, sans-serif;
 	font-size:10px;
 	display:inline-block;
-	padding-top:5px;
 }
 
 #logout:hover{
@@ -268,7 +319,7 @@ select {
 
 
 #branches{
-	display:none;
+	visibility:hidden;
 }
 
 
@@ -281,6 +332,25 @@ select {
 	display:block;
 }
 
-
+@media screen and (-webkit-min-device-pixel-ratio:0) { 
+    select {
+	padding-right:18px;
+	}
+    #repos label, #branches label{
+		position:relative;
+	}
+    #branches label:after, #repos label:after {
+        content:'>';
+        font:12px "Consolas", monospace;
+        color:#ccc;
+        -webkit-transform:rotate(90deg);
+        position:absolute;
+        right:4px;
+        top:0px;
+		padding:0px 3px 2px 3px;
+        pointer-events:none;
+        border-bottom:1px solid #ddd;
+    }
+}
 
 

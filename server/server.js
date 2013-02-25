@@ -58,17 +58,21 @@ app.all('*', function (req, res, next) {
   next();
 });
 
+app.use(express.static(__dirname+'/public'));
 
 app.get('/authenticate/:code', function(req, res) {
-  console.log('authenticating code:' + req.params.code);
   authenticate(req.params.code, function(err, token) {
-    var result = err || !token ? {"error": "bad_code"} : { "token": token };
-    console.log(result);
+    var result = err || !token ? {"error": "There was a problem authenticating your request."} : { "token": token };
     res.json(result);
   });
 });
 
-var port = process.env.PORT || config.port || 9999;
+
+app.get('*', function(req, res){
+  res.sendfile('public/index.html');
+});
+
+var port = process.env.PORT || config.port || 9000;
 
 app.listen(port, null, function (err) {
   console.log('Gatekeeper, at your service: http://localhost:' + port);

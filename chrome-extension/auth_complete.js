@@ -1,5 +1,3 @@
-var hotfix = new Hotfix();
-var local = hotfix.getLocal();
 
 // Get the authorization code from the url that was returned by github
 var authCode = getAuthCode(window.location.href);
@@ -15,14 +13,19 @@ function getAuthCode(url){
   
 // Save the access token and other pertitent details to local storage
 var accessToken = getAccessToken(authCode, function(response){
-    var data = local.getData();
+    if(localStorage['hotfix']){
+	var data = JSON.parse(localStorage['hotfix']);
+	}
+	else{
+		data = {};
+	}
     data.accessTokenDate = new Date().valueOf();
     for (var name in response) {
       if (response.hasOwnProperty(name) && response[name]) {
         data[name] = response[name];
       }
     }
-    local.setSource(data);
+    localStorage['hotfix'] = JSON.stringify(data);
     
 // Call the authorize function to authorize the current user and complete the oauth flow
     authorize();
@@ -31,8 +34,9 @@ var accessToken = getAccessToken(authCode, function(response){
 
 // Authorize the current user
 function authorize(){
+	var data = JSON.parse(localStorage['hotfix']);
     var xhr = new XMLHttpRequest();
-    var accessToken = local.getData('accessToken');
+    var accessToken = data.accessToken;
     xhr.open('GET', 'https://api.github.com/user?access_token='+ accessToken);
     xhr.send();
     xhr.onload = function() {
@@ -40,10 +44,9 @@ function authorize(){
 // Save a few user details to local storage
         var parseAuthorization = JSON.parse(xhr.responseText);
         var user = parseAuthorization.login;
-		var avatar = parseAuthorization.avatar_url;
+		data.username = user;
+        localStorage['hotfix'] = JSON.stringify(data);
 		
-        local.setData('username', user);
-		local.setData('avatar', avatar);
 // Send a message to eventPage.js, which sends a message to panel.js, to reload the page
         chrome.extension.sendMessage({greeting: "reload_background"}, function(response){
 		
@@ -63,7 +66,7 @@ function authorize(){
 // Get the access token from github and save it to local storage
 function getAccessToken(authorizationCode, callback){
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', 'http://hotfix.nodejitsu.com/authenticate/'+ authorizationCode);
+    xhr.open('GET', 'https://hotfix.nodejitsu.com/authenticate/'+ authorizationCode);
     xhr.send();
     xhr.onload = function() {
         callback(parseAccessToken(xhr.responseText));
