@@ -1,6 +1,6 @@
 
-	//if there is no data in local storage then the user is not authenicated so
-	//we should show the authorization page, otherwise the user is authenticated 
+	//If there is no hotfix data in local storage then the user is not authenicated 
+	//so we should show the authorization page, otherwise the user is authenticated 
 	//and we can proceed. 
 	
 	if(!localStorage.getItem('hotfix')){
@@ -8,9 +8,10 @@
 		document.getElementById('authorized').style.display = 'none';   
     }
     else{
+
 		var repoDiv = document.getElementById('repos');
 	
-		//uses spin.js to start a loading spinner on the repository div
+		//Uses spin.js to start a loading spinner in the repository div
 		var smallSpinner = new Spinner({
 			color: '#aaa',
 			lines:11,
@@ -21,41 +22,45 @@
 			top: '26px',
 			speed: 1.5
 		}).spin(repoDiv);
-		var resourceArray = [];
+		
+		
+		//Declare an array to hold our edited resouces.
+		var panelResources = [];
 	
-		//get all of the items stored in local storage
+		//Get all of the items stored in local storage and JSON.parse them.
 		var hotfix = JSON.parse(localStorage['hotfix']);
 	
-		//get the access token that we use to authenticate with github
+		//Get the access token that we will use to authenticate with github.
 		var token = hotfix.accessToken;
 	
-		//initiate github.js instance
+		//Initiate github.js instance.
 		var github = new Github({
 			token: token,
 			auth: "oauth"
 		});
     
-		//initiate a user in github.js
+		//Initiate a user in github.js.
 		var user = github.getUser();
-	
-		//get the current user from local storage
+		
+		//Get the current username from local storage.
 		var username = hotfix.username;
-	
-		//list the current users repo
+		
+		console.log(showUser);
+		//List the authenticated users repositories.
 		listRepos = user.userRepos(username, function(err, repos){
 			var select = document.getElementById('repo-list');
 
-			//stop the spinner that we started on page load
+			//Stop the spinner that we started on page load.
 			smallSpinner.stop();
 			
-			//populates the select list with the users' repos
+			//Populate the select list with the users' repos
 			for(var i=0; i < repos.length; i++){
 				var repo = repos[i].name;
 				select.options.add(new Option(repo))
 			}
 		});
 
-		//insert the username with a link to their GitHub profile
+		//Insert the username with a link to their GitHub profile
 		var showUser = document.createElement('li');
 		var userName = document.createTextNode(username);
 		var userLink = document.createElement('a');
@@ -65,58 +70,58 @@
 		showUser.appendChild(userLink);
 		document.getElementById('username').appendChild(showUser);
 
-		//Generate a list of resources that has been edited
+		//Generate a list of resources that has been edited.
 		chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 			if (request.greeting == "show resources") {
 				
-				//clear out any existing resources
+				//Clear out any existing resources.
 				document.getElementById('edited-resources').innerHTML = '';
 				
-				//populate the resourceArray 
-				var resourceArray = request.showResource;
+				//Populate the panelResources.
+				var panelResources = request.showResource;
 				
-				//create container div for holding the resources and fill it
+				//Create a container div for holding the resources
 				var editedResources = document.getElementById('edited-resources');
 				
 				
-				//This part gets a little messy. We have to dynamically create several 
+				//This part gets a little messy. We have to dynamically create numerous
 				//divs and spans for every resource that was edited. 
 				//ToDo: See if there is a better way to do this. 
 				
-				for (i=0; i<resourceArray.length;i++){
-					//add an id to all of the objects in resourceArray
-					resourceArray[i].id = i;
+				for (i=0; i<panelResources.length;i++){
+					//Add an id to all of the objects in rour esourceArray.
+					panelResources[i].id = i;
 					
-					// create an achor element and set the href and target 
+					//Create an achor element and set the href and target.
 					var a = document.createElement('a');
-					a.href = resourceArray[i].url;
+					a.href = panelResources[i].url;
 					a.target = '_blank';
 					
-					//extract the path and hostname from the anchor element
+					//Extract the path and hostname from the anchor element.
 					var resourcePath = a.pathname;
 					var hostName = a.hostname;
 					var host = hostName.replace(/^www\./,'');
 					
 					
-					//remove the leading / and add it to the resourceArray
+					//Remove the leading / and add it to the panelResources.
 					if (resourcePath.charAt(0) == "/") {
 						resourcePath = resourcePath.substr(1);
 					}
-					resourceArray[i].path = resourcePath;
+					panelResources[i].path = resourcePath;
 					
-					//create a div to hold the resource and give it an id
+					//Create a div to hold the resource and give it an id.
 					var resourceDiv = document.createElement('div');
 					resourceDiv.id = 'resource-' + i;
 					resourceDiv.className = "resource";
 					
-					//create a div for the domain that this resource came from 
+					//Create a div for the domain that this resource came from 
 					var source = document.createElement('div');
 					source.className = 'source';
 					var domainText = document.createTextNode(host);
 					source.appendChild(domainText);
 					
 					
-					//create a list element to hold the resource and path
+					//Create a list element to hold the resource and path
 					var file = document.createElement('li');
 					var fileText = document.createTextNode('Resource: ');
 					var fileName = resourcePath.substring(resourcePath.lastIndexOf('/')+1);
@@ -128,126 +133,126 @@
 					file.appendChild(fileSpan);
 					file.className = 'file';
 					
-					//create an li element and add the full path to it
+					//Create an li element and add the full path to it.
 					var li = document.createElement('li');
 					var linkText = document.createTextNode(resourcePath);
 					var fileLabel = document.createTextNode('Full commit path: ');
 					
-					//append the anchor element to the li element we just created
+					//Append the anchor element to the li element we just created.
 					a.appendChild(linkText);
 					li.appendChild(fileLabel);
 					li.appendChild(a);
 					
-					//create a span to hold the remove icon and give it a class 
+					//Create a span to hold the remove icon and give it a class. 
 					var removeSpan = document.createElement('span');
 					removeSpan.className = 'remove-resource';
 					
-					//append the span to the li element
+					//Append the span to the li element.
 					source.appendChild(removeSpan);
 					
-					//create a div to hold the commit label, textarea(commit message), 
+					//Create a div to hold the commit label, textarea(commit message), 
 					//and commit button
 					var commitWrapper = document.createElement('div');
 					commitWrapper.className = 'commit-wrapper';
 					
-					//create a label for the commit message and append it to the wrapper
+					//Create a label for the commit message and append it to the wrapper.
 					var commitInputLabel = document.createElement('label');
 					var inputLabelText = document.createTextNode('Commit message: ');
 					commitInputLabel.appendChild(inputLabelText);
 					commitWrapper.appendChild(commitInputLabel);
 					
-					//create the textarea and give it an id so we can access it later
+					//Create the textarea and give it an id so we can access it later.
 					var commitInput = document.createElement('textarea');
 					commitInput.id = 'commit-message-' + i;
 					commitInput.className = 'commit-textarea';
 					
-					//create the commit button, give it some text, and add a class
+					//Create the commit button, give it some text, and add a class.
 					var commitButton = document.createElement('button');
 					var buttonText = document.createTextNode('Commit');
 					commitButton.className = 'commit-button';
 					commitButton.appendChild(buttonText);
 					
-					//append the textarea and button to the commit wrapper div
+					//Append the textarea and button to the commit wrapper div
 					commitWrapper.appendChild(commitInput);
 					commitWrapper.appendChild(commitButton);
 					
-					//append the source, resource, path, and commit info to the
-					//container div
+					//Append the source, resource, path, and commit info to the
+					//container div.
 					resourceDiv.appendChild(source);
 					resourceDiv.appendChild(file);
 					resourceDiv.appendChild(li); 
 					resourceDiv.appendChild(commitWrapper);
 					
-					//finally append the resource container to the main div. 
+					//Finally append the resource container to the main div. 
 					editedResources.appendChild(resourceDiv);
 					
 				}
-														
+			
+				//Get all of the remove resource spans
 				var removeResource = document.getElementsByClassName('remove-resource');
 				
-				//adds an event listener for all of the newly added resource divs
+				//Add an event listener for each remove resource span
 				for (var i = 0; i < removeResource.length; i++) {
 					removeResource[i].addEventListener('click', function() {
 
-						//get the numeric id of the resource div which corresponds
-						//to the resources id in the resourceArray
+						//Get the numeric id of the resource div which will correspond
+						//to the resources id in the panelResources.
 						var parentId = this.parentNode.parentNode.id;
 						var id = parentId.replace('resource-','');
-						for (var key in resourceArray) {
-							if (resourceArray[key].hasOwnProperty('id') && resourceArray[key].id == id) {
+						for (var key in panelResources) {
+							if (panelResources[key].hasOwnProperty('id') && panelResources[key].id == id) {
 								
-								//remove the div on the screen and send a message to 
+								//Remove the div on the screen and send a message to 
 								//devtools.js via eventPage.js to remove it from the 
-								//resourceArray
+								//DevArray
 								this.parentNode.parentNode.remove();
 								chrome.extension.sendMessage({greeting: "remove resource", data: id}, function(response) {});
 							}            
 						}
 					});
 				}
-		
+				
+				//Get all of our commit buttons.
 				var elements = document.getElementsByClassName('commit-button');
 				
-				//adds an event listener to all of the commit buttons
+				//Add an event listener to each commit button.
 				for (var i = 0; i < elements.length; i++) {
 					elements[i].addEventListener('click', function() {
 						var repoList = document.getElementById('repo-list');
 						var repoName = repoList.options[repoList.selectedIndex].text;
 					
-						//check that a repository was selected 
+						//Check that a repository was selected. 
 						if(!repoName){
 							alert('Please select a respository on the left');
 							return;
 						}
-					
-						//if so, proceed
 						else{
 					
-							//get the id from the parent div that will correspond with the 
-							//resources' id in the resourceArray
+							//Get the id from the parent div that corresponds to the 
+							//resources id property in our panelResources array
 							var parentId = this.parentNode.parentNode.id;
 							var parentNode = this.parentNode.parentNode;
 							var id = parentId.replace('resource-','');
 							
-							//read the commit message
+							//Get commit message from the textarea
 							var commitMessageTextArea = 'commit-message-'+id;
 							commitMessage = document.getElementById(commitMessageTextArea).value;
 							
-							//check that the user has in fact entered a commit message
+							//Check that the user has in fact entered a commit message.
 							if(!commitMessage){
 								alert('Please enter a commit message.');
 								return;
 							}
 							
-							//and that it wasn't just a bunch of spaces
+							//And that it's not just a bunch of spaces.
 							var allSpaces = commitMessage.trim();
 							if(allSpaces.length == 0){
 								alert('Please enter a valid commit message.');
 								return;
 							}
 							
-							//create an overlay div and a loading spinner while we send the 
-							//commit to GitHub
+							//Create an overlay div and a loading spinner while we send the 
+							//commit to GitHub.
 							var overlayDiv = document.createElement('div');
 							overlayDiv.className='overlay';
 							parentNode.appendChild(overlayDiv);
@@ -263,16 +268,18 @@
 								speed: .9
 							}).spin(parentNode);
 								
+								
+							//Get the variables we need to send with our request to GitHub.
 							var branchList = document.getElementById('branch-list');
 							var branch = branchList.options[branchList.selectedIndex].text;
 							var repo = github.getRepo(username,repoName);
-							repo.write(branch,resourceArray[id].path, resourceArray[id].content,commitMessage,function(err){
+							repo.write(branch,panelResources[id].path, panelResources[id].content,commitMessage,function(err){
 								if(err){
 									alert('Sorry. There was a problem pushing your commit to GitHub. Please try again.');
 								}
 								else{
 
-									//create a div to show the success image
+									//Create a div to show the success image.
 									var successImage = document.createElement('div');
 									successImage.id = 'success-image';
 									parentNode.appendChild(successImage);
@@ -282,11 +289,11 @@
 										spinner.stop();
 									}, 5);
 										
-									//send a message to devtools.js via eventPage.js to remove  
-									//the resource we just committed from the resourceArray
+									//Send a message to devtools.js via eventPage.js to remove  
+									//the resource we just committed from the devResources array.
 									chrome.extension.sendMessage({greeting: "remove resource", data: id}, function(response) {});
 									
-									//and remove it from view
+									//And remove it from view.
 									setTimeout(function(){
 										parentNode.remove();
 									},1000);
@@ -297,22 +304,23 @@
 				}
 			}
    
-		   //sends a response to devtools.js via eventPage.js to make sure the 
-		   //arrays are in sync with the same ids etc. 
-		   sendResponse({updatedArray : resourceArray });
+		   //Send a response to devtools.js via eventPage.js to make sure devResources
+		   //and panelResources are in sync (ids, paths, etc...)
+		   sendResponse({updatedArray : panelResources });
 		}); 
 
-		//get the branches for the selected repo
+		//Add listener for a change on the repo-list select element.
 		document.getElementById('repo-list').addEventListener('change',function(){
 			var repoList = document.getElementById('repo-list');
 			var repoName = repoList.options[repoList.selectedIndex].text;
 			document.getElementById('branch-list').options.length = 0;
 			if(repoName){
 	
-				//gets the repo details using github.js
+				//Get the selected repository details. 
 				var repo = github.getRepo(username, repoName);
 				var branch = document.getElementById('branches');
-				//show a spinner while the branches load
+				
+				//Show a spinner while the branches load.
 				var smallSpinner = new Spinner({
 					color: '#aaa',
 					lines:11,
@@ -325,7 +333,7 @@
 				}).spin(branch);
 				branch.style.visibility = 'visible';
 		
-				//list the branches of the repository
+				//List all branches of the selected repository.
 				repo.listBranches(function(err, branches){
 				
 					var select = document.getElementById('branch-list');
@@ -334,12 +342,12 @@
 						select.options.add(new Option(branch))
 					}
 				
-					//stop the spinner
+					//Stop the spinner.
 					smallSpinner.stop();
 				});
 			}
 			else{
-				//hide the branches if user unselects the repository
+				//Hide the branches if user unselects the repository.
 				document.getElementById('branches').style.visibility = 'hidden';
 			}
     
@@ -347,21 +355,22 @@
 
 	}
 	
-	//receive message from eventPage.js to reload the panel after successful authentication
+	//Listen for a message from eventPage.js to reload the panel after successful authentication
 	chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 		if (request.greeting == "reload_panel"){
 			document.location.reload();
 		}
     }); 
   
-	//sends a message to eventPage.js to open a new window with the github authorization url
+	//Send a message to eventPage.js to open a new window with the github authorization url
 	document.getElementById("authorize-button").addEventListener("click", function() {
 		chrome.extension.sendMessage({greeting: "authorize_me"}, function(response) {});
 	});
 
-    // sends a message to eventPage.js to log out the current user from GitHub    
+    //Send a message to eventPage.js to log out current user out of GitHub    
 	document.getElementById("logout").addEventListener("click", function() {
-		chrome.extension.sendMessage({greeting: "logout"}, function(response) {});
+		chrome.extension.sendMessage({greeting: "logout"}, function(response) { });
+		
 	});
 
 

@@ -12,5 +12,5 @@
 
 // Redirect back to the extension itself so that we have priveledged
 // access again
-    var redirect = chrome.extension.getURL('auth_complete.html');
+    var redirect = chrome.extension.getURL('authorize.html');
     window.location = redirect + params;
