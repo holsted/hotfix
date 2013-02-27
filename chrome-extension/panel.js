@@ -22,7 +22,7 @@
 			top: '26px',
 			speed: 1.5
 		}).spin(repoDiv);
-		
+	
 		
 		//Declare an array to hold our edited resouces.
 		var panelResources = [];
@@ -45,7 +45,7 @@
 		//Get the current username from local storage.
 		var username = hotfix.username;
 		
-		console.log(showUser);
+		
 		//List the authenticated users repositories.
 		listRepos = user.userRepos(username, function(err, repos){
 			var select = document.getElementById('repo-list');

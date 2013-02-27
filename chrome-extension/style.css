@@ -74,9 +74,12 @@ select {
 	margin: 4px 0px 0px 0px;
 	border:1px solid #ccc;
 	border-radius:3px;
-	padding:2px;
+	padding:5px 5px 0px 5px;
 	-webkit-box-shadow: 1px 1px 2px #eee;
 	-webkit-appearance:none;
+	font-family: "Helvetica", Arial, sans-serif;
+	font-size:12px;
+	
 }
 
 .commit-wrapper input, .commit-wrapper label{

@@ -30,7 +30,7 @@
 	//This is done to ensure that both arrays are in sync
 	chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 		if (request.greeting == "update resources"){
-            chrome.tabs.sendMessage(sender.tab.id, {greeting: "show resources", showResource: request.data}, function(response) {
+			chrome.tabs.sendMessage(sender.tab.id, {greeting: "show resources", showResource: request.data}, function(response) {
 				chrome.tabs.sendMessage(sender.tab.id, {greeting: "sync array", data: response.updatedArray}, function(response) {});
 			});
 		}

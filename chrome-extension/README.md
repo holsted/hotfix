@@ -1,5 +1,13 @@
-﻿This is hotfix, a chrome extension. Hotfix allows you to push changes from 
-Chrome Developer Tools directly to GitHub. 
+﻿This is hotfix, a chrome extension that lets you push changes from 
+Chrome Developer Tools to GitHub. 
 
-Hotfix uses the github.js and spin.js libraries. 
+Hotfix uses several open source libraries and images. Here they are for credit. 
+
+Github.js - https://github.com/michael/github
+Gatekeeper.js - https://github.com/prose/gatekeeper
+Spinner.js - https://github.com/fgnass/spin.js
+Hotfix Icon - http://www.iconblock.com/
+
+
+
 

@@ -1,12 +1,11 @@
 
-	//This is fird whenever Chrome Developer Tools is opened. It's creates the hotfix panel
-	chrome.devtools.panels.create("Hotfix", "/toolbar.png", "/panel.html", function(extensionPanel) {
-		   
+	//This is fired whenever Chrome Developer Tools is opened. It's creates the hotfix panel
+	chrome.devtools.panels.create("Hotfix", "img/toolbar.png", "/panel.html", function(extensionPanel) {
+		  
 	   //Declare an array to hold the resources that are edited. We have to do it 
 	   //instead of panel.js because otherwise the user would have to first click on the hotfix panel in order
 	   //for us to store the resources they edit. That's why we have to use two arrays and make sure they always in sync
 		var devResources = [];
-	   
 	   
 		//whenever a resource is added to the page, this checks to see if we have that
 		//resource in our devResources array. If we do, it removes it from devResources and
@@ -74,7 +73,9 @@
 		//Fired when the hotfix panel is clicked on. Sends the full devResources array to panel.js
 		//to generate a list of resources that have been edited. 
 		extensionPanel.onShown.addListener(function(panelWindow) {
+			
 			chrome.extension.sendMessage({greeting: "update resources", data: devResources}, function(response) {});
+			
 			
 		});
 		
