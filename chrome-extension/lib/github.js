@@ -52,11 +52,25 @@
     // =======
 
     Github.User = function() {
-      this.repos = function(cb) {
+      
+	  // List current user repos
+      // -------------
+	  
+	  this.repos = function(cb) {
         _request("GET", "/user/repos?type=all&per_page=1000&sort=updated", null, function(err, res) {
           cb(err, res);
         });
       };
+	  
+	  // List current user details
+      // ------------ 
+	  
+	   this.currentUser = function(cb) {
+        _request("GET", "/user", null, function(err, res) {
+          cb(err, res);
+        });
+      };
+	  
 
       // List user organizations
       // -------

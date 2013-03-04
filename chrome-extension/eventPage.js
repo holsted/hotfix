@@ -12,7 +12,7 @@
 	chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 		if (request.greeting == "authorize_me"){
 			panelId = sender.tab.id;
-			chrome.windows.create({'url' : 'https://github.com/login/oauth/authorize?client_id=4e246d0bfea1c15993a2&scope=user,repo', 'width':1020, 'height':600});
+			chrome.windows.create({'url' : 'https://github.com/login/oauth/authorize?client_id=4e246d0bfea1c15993a2&scope=repo', 'width':1020, 'height':600});
 			sendResponse({farewell: "authorization_sent"});
 		}
 	});
@@ -20,7 +20,7 @@
 	//Listens for a message form devtools.js to reload panel.html on succesful auth
 	chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 		if (request.greeting == "reload_background"){
-            chrome.tabs.sendMessage(panelId, {greeting: "reload_panel"}, function(response) {});
+            chrome.tabs.sendMessage(panelId, {greeting: "reload_panel", data: request.data}, function(response) {});
 			sendResponse({greeting:"reloaded"});	
 		}
 	});
@@ -53,9 +53,9 @@
 			chrome.windows.create({'url':'https://github.com/logout'}, function(window){
 				setTimeout(function(){
 					chrome.windows.remove(window.id);
-				},2500);
-				localStorage.clear();
-				chrome.tabs.sendMessage(sender.tab.id, {greeting: "reload_panel"}, function(response) {});
+				},2000);
+				
+				chrome.tabs.sendMessage(sender.tab.id, {greeting: "unload_panel"}, function(response) {});
 			});
 			chrome.tabs.executeScript(null,{
 				code:"document.getElementsByTagName('form')[1].style.display='none';document.getElementsByTagName('form')[1].submit();",

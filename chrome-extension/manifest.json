@@ -2,17 +2,15 @@
   "manifest_version": 2,
   "name": "Hotfix",
   "description": "This extension lets you push changes to GitHub directly from Chrome Developer Tools",
-  "version": "1.0",
+  "version": "1.1",
   "devtools_page": "devtools.html",
   "permissions": [
     "https://github.com/login/oauth/access_token",
         "https://github.com/login/oauth/authorize",
-        "https://github.com/robots.txt",
         "https://api.github.com/",
         "https://github.com/logout",
         "https://hotfix.nodejitsu.com/",
-        "tabs",
-        "management"
+        "tabs"
   ],
   "background": {
     "scripts": ["eventPage.js"],

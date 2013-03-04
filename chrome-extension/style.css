@@ -317,7 +317,7 @@ select {
 }
 
 #authorized{
-	display:block;
+	display:none;
 }
 
 /*This adds the custom select arrow on the select boxes*/

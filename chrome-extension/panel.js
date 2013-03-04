@@ -1,14 +1,14 @@
-
+(function(){
 	//If there is no hotfix data in local storage then the user is not authenicated 
 	//so we should show the authorization page, otherwise the user is authenticated 
 	//and we can proceed. 
 	
-	if(!localStorage.getItem('hotfix')){
-		document.getElementById('unauthorized').style.display = 'block';
-		document.getElementById('authorized').style.display = 'none';   
+	
+	if(!sessionStorage.getItem('hotfix')){
+		document.getElementById('unauthorized').style.display = 'block';   
     }
     else{
-
+		document.getElementById('authorized').style.display = 'block';
 		var repoDiv = document.getElementById('repos');
 	
 		//Uses spin.js to start a loading spinner in the repository div
@@ -23,31 +23,52 @@
 			speed: 1.5
 		}).spin(repoDiv);
 	
-		
-		//Declare an array to hold our edited resouces.
-		var panelResources = [];
 	
 		//Get all of the items stored in local storage and JSON.parse them.
-		var hotfix = JSON.parse(localStorage['hotfix']);
-	
+		var hotfix = JSON.parse(sessionStorage['hotfix']);
+		
 		//Get the access token that we will use to authenticate with github.
-		var token = hotfix.accessToken;
-	
 		//Initiate github.js instance.
 		var github = new Github({
-			token: token,
+			token: hotfix.accessToken,
 			auth: "oauth"
 		});
     
 		//Initiate a user in github.js.
 		var user = github.getUser();
 		
-		//Get the current username from local storage.
-		var username = hotfix.username;
+		//Get the details for the current user.
+		var currentUser = user.currentUser(function(err, user){
+			// Add the username to the hotfix object.
+			hotfix.username = user.login;
+			
+			//Insert the username with a link to their GitHub profile
+			var showUser = document.createElement('li');
+			var userName = document.createTextNode(hotfix.username);
+			var userLink = document.createElement('a');
+			userLink.appendChild(userName);
+			userLink.href = "https://www.github.com/"+hotfix.username;
+			userLink.target = '_blank';
+			showUser.appendChild(userLink);
+			document.getElementById('username').appendChild(showUser);
+			var logout = document.createElement('span');
+			logout.id = 'logout';
+			var logoutText = document.createTextNode('(logout)');
+			logout.appendChild(logoutText);
+			document.getElementById('user').appendChild(logout);
+			
+			 //Send a message to eventPage.js to log out current user out of GitHub    
+	document.getElementById("logout").addEventListener("click", function() {
+		chrome.extension.sendMessage({greeting: "logout"}, function(response) { });
+		
+	});
+		
+		});
+		
 		
 		
 		//List the authenticated users repositories.
-		listRepos = user.userRepos(username, function(err, repos){
+		listRepos = user.repos(function(err, repos){
 			var select = document.getElementById('repo-list');
 
 			//Stop the spinner that we started on page load.
@@ -60,15 +81,7 @@
 			}
 		});
 
-		//Insert the username with a link to their GitHub profile
-		var showUser = document.createElement('li');
-		var userName = document.createTextNode(username);
-		var userLink = document.createElement('a');
-		userLink.appendChild(userName);
-		userLink.href = "https://www.github.com/"+username;
-		userLink.target = '_blank';
-		showUser.appendChild(userLink);
-		document.getElementById('username').appendChild(showUser);
+		
 
 		//Generate a list of resources that has been edited.
 		chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
@@ -272,7 +285,7 @@
 							//Get the variables we need to send with our request to GitHub.
 							var branchList = document.getElementById('branch-list');
 							var branch = branchList.options[branchList.selectedIndex].text;
-							var repo = github.getRepo(username,repoName);
+							var repo = github.getRepo(hotfix.username,repoName);
 							repo.write(branch,panelResources[id].path, panelResources[id].content,commitMessage,function(err){
 								if(err){
 									alert('Sorry. There was a problem pushing your commit to GitHub. Please try again.');
@@ -317,7 +330,7 @@
 			if(repoName){
 	
 				//Get the selected repository details. 
-				var repo = github.getRepo(username, repoName);
+				var repo = github.getRepo(hotfix.username, repoName);
 				var branch = document.getElementById('branches');
 				
 				//Show a spinner while the branches load.
@@ -358,6 +371,15 @@
 	//Listen for a message from eventPage.js to reload the panel after successful authentication
 	chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 		if (request.greeting == "reload_panel"){
+			sessionStorage['hotfix'] = JSON.stringify(request.data);
+			document.location.reload();
+		}
+    }); 
+	
+	//Listen for a message from eventPage.js to reload the panel after successful authentication
+	chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
+		if (request.greeting == "unload_panel"){
+			sessionStorage.clear();
 			document.location.reload();
 		}
     }); 
@@ -367,13 +389,11 @@
 		chrome.extension.sendMessage({greeting: "authorize_me"}, function(response) {});
 	});
 
-    //Send a message to eventPage.js to log out current user out of GitHub    
-	document.getElementById("logout").addEventListener("click", function() {
-		chrome.extension.sendMessage({greeting: "logout"}, function(response) { });
-		
-	});
+   
 
 
+	
+})();
 
     
     

@@ -60,23 +60,18 @@
 			if (request.greeting == "update array"){
 			var id = request.data;
 				for (var key in devResources) {
-								if (devResources[key].hasOwnProperty('id') && devResources[key].id == id) {
-									devResources.splice(key,1);
-									console.log(devResources);
-								}   
-				
+					if (devResources[key].hasOwnProperty('id') && devResources[key].id == id) {
+						devResources.splice(key,1);
+						console.log(devResources);
+					}   
 				}
-			
 			}
 		});
 		
 		//Fired when the hotfix panel is clicked on. Sends the full devResources array to panel.js
 		//to generate a list of resources that have been edited. 
 		extensionPanel.onShown.addListener(function(panelWindow) {
-			
 			chrome.extension.sendMessage({greeting: "update resources", data: devResources}, function(response) {});
-			
-			
 		});
 		
 	});
