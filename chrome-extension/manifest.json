@@ -5,13 +5,9 @@
   "version": "1.1",
   "devtools_page": "devtools.html",
   "permissions": [
-    "https://github.com/login/oauth/access_token",
-        "https://github.com/login/oauth/authorize",
-        "https://api.github.com/",
-        "https://github.com/logout",
-        "https://hotfix.nodejitsu.com/",
-        "tabs"
+    "tabs"
   ],
+  
   "background": {
     "scripts": ["eventPage.js"],
     "persistent": false
@@ -24,8 +20,9 @@
   }
 ],
 
-  "icons": { "16": "icon16.png",
-           "48": "icon48.png",
-          "128": "icon128.png" 
-        }
+  "icons": {
+    "16": "icon16.png",
+    "48": "icon48.png",
+    "128": "icon128.png" 
+  }
 }

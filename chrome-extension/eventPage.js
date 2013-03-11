@@ -30,6 +30,9 @@
 	//This is done to ensure that both arrays are in sync
 	chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 		if (request.greeting == "update resources"){
+			if(sender.tab.id == -1){
+				alert("Apparently, hotfix only works properly when Chrome Developer Tools is not docked to the main window. To undock the devtools panel, click on the button in the bottom left corner of the panel. Then close and reopen devtools.");
+			}
 			chrome.tabs.sendMessage(sender.tab.id, {greeting: "show resources", showResource: request.data}, function(response) {
 				chrome.tabs.sendMessage(sender.tab.id, {greeting: "sync array", data: response.updatedArray}, function(response) {});
 			});
