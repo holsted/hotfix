@@ -1,5 +1,4 @@
 (function(){
-
     // TODO: add a check for the state param from GitHub.
     
     // Get the authorization code from the url that was returned by GitHub
@@ -48,10 +47,17 @@
     
     function callback(error) {
 
-        // The following works around bug: crbug.com/84201
+        // Check if it's the users first time to authorize with GitHub. If so, show some welcome instructions
+        if(!localStorage.getItem('hotfix-welcome')){
+            document.getElementById('welcome').style.display = 'block';
+            localStorage.setItem('hotfix-welcome', 'true');
+        }
 
-        window.open('', '_self', '');
-        window.close();
+        // The following works around bug: crbug.com/84201
+        else{
+            window.open('', '_self', '');
+            window.close();
+        }
     }  
 })();  
       

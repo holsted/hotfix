@@ -24,11 +24,11 @@ This project is comprised of two parts (each with their own respective directory
 
 2. A tiny node.js server (server).
 
-First, you need to setup a Node.js server and push the contents of the /server directory to your new server. Hotfix currently resides at hotfix.nodejitsu.com, but any server with Node.js installed will do. Checkout the Gatekeeper.js link above for more information.
+First, you need to setup a Node.js server and push the contents of the /server directory to your new server. You'll probably want to update the package.json file or even fork the project directly from gatekeeper.js. Hotfix is currently hosted at hotfix.nodejitsu.com, but any server with Node.js installed will do. 
 
-Next, register a new application on GitHub. Look under Account Settings -> Applications -> Register new application. You'll need to enter a name for your application, and use your new server URL for the Main URL and Callback URL. (For example: hotfix.nodejitsu.com)
+Next, register a new application on GitHub. Look under Account Settings -> Applications -> Register new application. You'll need to enter a name for your application, and use your new node.js server URL for the Main URL and Callback URL. (For example: hotfix.nodejitsu.com)
 
-Now, you should add your GitHub client_secret and client_id as environment variables on your Node.js server.  
+Now, you should add your GitHub client_secret and client_id as environment variables on your server.  
 
 Then, update /chrome-extension/manifest.json. 
 

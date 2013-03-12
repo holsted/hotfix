@@ -12,7 +12,7 @@ var panelId;
 chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
     if (request.greeting == "authorize_me"){
         panelId = sender.tab.id;
-        chrome.windows.create({'url' : 'https://github.com/login/oauth/authorize?client_id=4e246d0bfea1c15993a2&scope=repo', 'width':1020, 'height':600});
+        chrome.windows.create({'url' : 'https://github.com/login/oauth/authorize?client_id=4e246d0bfea1c15993a2&scope=repo', 'width':1100, 'height':650});
         sendResponse({farewell: "authorization_sent"});
     }
 });
@@ -31,7 +31,7 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
     if (request.greeting == "update resources"){
         if(sender.tab.id == -1){
-            alert("Apparently, hotfix only works properly when Chrome Developer Tools is not docked to the main window. To undock the devtools panel, click on the button in the bottom left corner of the panel. Then close and reopen devtools.");
+            alert("Unfortunately, Hotfix doesn't work properly when Chrome Developer Tools is docked to the main window. Please undock Dev Tools by clicking on the button in the bottom left corner. Then close and reopen Dev Tools.");
         }
         chrome.tabs.sendMessage(sender.tab.id, {greeting: "show resources", showResource: request.data}, function(response) {
             chrome.tabs.sendMessage(sender.tab.id, {greeting: "sync array", data: response.updatedArray}, function(response) {});

@@ -1,19 +1,10 @@
 (function(){
-     
-    // Checks local storage to see if the user has opened this page before. If there is
-    // no value in local storage then we can assume it's the first time for the user
-    // to use the extension. On that computer anyway. 
-
-    if(!localStorage.getItem('hotfix-first')) {
-        document.getElementById('first-time').style.display = 'block'; 
-        localStorage.setItem('hotfix-first', 'false');
-    }
     
     // If there is no hotfix data in local storage then the user is not authenicated 
     // so we should show the authorization page, otherwise the user is authenticated 
     // and we can proceed.
 
-    else if(!sessionStorage.getItem('hotfix')){
+    if(!sessionStorage.getItem('hotfix')){
         document.getElementById('unauthorized').style.display = 'block';   
     }
     else{
