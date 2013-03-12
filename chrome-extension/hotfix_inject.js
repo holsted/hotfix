@@ -1,5 +1,7 @@
+//This script is injected to hotfix.nodejitsu.com to grab the url paramters and 
+//redirect back to the chrome extension so we can utilize them. 
 
-// Get all ? params from this URL
+// Get all the parameters from the URL.
     var url = window.location.href;
     var params = '?';
     var index = url.indexOf(params);

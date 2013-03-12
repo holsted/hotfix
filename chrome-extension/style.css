@@ -3,14 +3,12 @@ html, body, #authorized, #wrapper, #sidebar{
 	height:100%;
 }
 
-
 body{
 	margin:0;
 	padding:0;
 	font-family: "Helvetica", Arial, sans-serif;
 	font-size:12px;
 	color: rgb(110, 116, 128);
-	
 }
 
 select {
@@ -28,6 +26,8 @@ select {
 	min-width:160px;
 }
 
+
+/*Main hotfix page */
 
 #edited-resources{
 	position:absolute;
@@ -78,8 +78,7 @@ select {
 	-webkit-box-shadow: 1px 1px 2px #eee;
 	-webkit-appearance:none;
 	font-family: "Helvetica", Arial, sans-serif;
-	font-size:12px;
-	
+	font-size:12px;	
 }
 
 .commit-wrapper input, .commit-wrapper label{
@@ -115,8 +114,7 @@ select {
 	list-style-type:none;
 	display:block;
 	margin-bottom:6px;
-	padding-left:15px;
-	
+	padding-left:15px;	
 }
 
 .remove-resource {
@@ -127,7 +125,6 @@ select {
 	margin-left:6px;
 	cursor:pointer;
 	vertical-align:middle;
-
 }
 
 .commit-button {
@@ -160,29 +157,10 @@ select {
 	border-color:#aaa;
 }
 
-#sidebar-header{
-	border-top: 1px solid rgb(68, 128, 200);
-	background-image: -webkit-gradient(linear, left top, left bottom, from(#5C93D5),to(#1553AA));
-	margin-top:1px;
-	height:35px;
-	line-height:34px;
-	
-}
 
-#hotfix-title{
-	position:absolute;
-	color: white;
-	text-shadow: rgba(0, 0, 0, 0.33) 0 1px 0;
-	font-weight: bold;
-	font-family: Lucida Grande, sans-serif;
-	font-size: 11px;
-	line-height: 11px;
-	margin-top:2px;
-	top:10px;
+/* Landing page and authorization page */
 
-}
-
-#octocat {
+.octocat-wrap {
 	float:left;
 	width:40%;
 	padding:20px;
@@ -203,6 +181,22 @@ select {
 	font-family: "Helvetica", Arial, sans-serif;
 	font-size: 21px;
 	color:#333;
+}
+
+#first-time-instructions{
+	font-family: "Helvetica", Arial, sans-serif;
+	font-size: 15px;
+	color:#333;	
+	padding:0px 25px 0px 25px;
+	margin-left:20px;
+}
+
+.side-note {
+	font-family: "Helvetica", Arial, sans-serif;
+	font-size: 12px;
+	color:#777;	
+	display:block;
+	margin-top:10px;
 }
 
 #authorize-button{
@@ -230,6 +224,33 @@ select {
 	border-color:#418737;
 }
 
+#unauthorized, #authorized, #first-time {
+	display:none;
+}
+
+
+/* sidebar */
+
+#sidebar-header{
+	border-top: 1px solid rgb(68, 128, 200);
+	background-image: -webkit-gradient(linear, left top, left bottom, from(#5C93D5),to(#1553AA));
+	margin-top:1px;
+	height:35px;
+	line-height:34px;
+}
+
+#hotfix-title{
+	position:absolute;
+	color: white;
+	text-shadow: rgba(0, 0, 0, 0.33) 0 1px 0;
+	font-weight: bold;
+	font-family: Lucida Grande, sans-serif;
+	font-size: 11px;
+	line-height: 11px;
+	margin-top:2px;
+	top:10px;
+}
+
 #sidebar {
 	float:left;
 	width:200px;
@@ -241,7 +262,6 @@ select {
 	margin-top:1px;
 	border-top: 1px solid rgb(68, 128, 200);
 	padding: 0px 5px 0px 5px;
-	
 }
 
 #sidebar-body{
@@ -274,8 +294,7 @@ select {
 
 #username li a:hover{
 	color: #4183c4;
-	text-decoration: none;
-	
+	text-decoration: none;	
 }
 
 #username li a{
@@ -312,15 +331,9 @@ select {
 	visibility:hidden;
 }
 
-#unauthorized {
-	display:none;
-}
-
-#authorized{
-	display:none;
-}
 
 /*This adds the custom select arrow on the select boxes*/
+
 @media screen and (-webkit-min-device-pixel-ratio:0) { 
     select {
 		padding-right:18px;

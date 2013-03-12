@@ -5,60 +5,75 @@
 </head>
 <body>
 <div id="wrapper">
-	
-	
-	<div id="unauthorized">
-			<div id = "octocat">
-				<img class = "octocat" src = "img/octocat.png" />
-			</div>
-		<div id = "auth">
-			<span class = "instructions">
-				<p> In order to get started we need to authorize this extension to access your GitHub repos. </p>
-			</span>
-			<button id="authorize-button">Authorize with GitHub</button>
-		</div>
-	
-	</div>
-	
-	<div id="authorized">
-		<div id = "sidebar">
-			<div id="sidebar-header">
-				<div id="sidebar-title">
-					<img id = "hotfix-icon" src = "icon32.png" />
-					<span id="hotfix-title">
-						Hotfix
-					</span>
-				</div>
-			</div>
-			<div id ="sidebar-body">
-				<div id="user">
-					<h2>GITHUB USERNAME</h2>
-					<span id="username"></span>
-				</div>
-				<div id="repository-details">
-					<div id="repos">
-						<h2>REPOSITORY</h2>
-						<label>
-							<select id="repo-list" name="repo-list">
-							<option> </option>
-							</select>
-						</label>
-					</div>
-					<div id="branches">
-						<h2>BRANCH</h2>
-						<label>
-						<select id="branch-list" name="branch-list">
-						</select>
-						</label>
-					</div>
-				</div>
-			</div>
-		</div>
-		
-		<div id="edited-resources">
-		
-		</div>
-	</div>
+    
+    <div id="first-time">
+        <div class = "octocat-wrap">
+            <img class = "octocat" src = "img/octocat.png" />
+        </div>
+
+        <div id = "first-time-instructions">
+            <h2> Welcome to hotfix. </h2>
+            <p> Here's a couple points to help you get started.</p>
+            <p> First, click on the Elements tab and make some changes. Then come back here to see a list of all the files that you have edited. Select a repository and branch to commit to, enter a commit message, and commit. Simple, right? <span class="side-note">Side note: The full path of the file is what will be pushed to GitHub. In other words, the root of your GitHub repo should match the root of your project.</span></p>
+            <p>Also, due to the way message passing works in Chrome, this extension doesn't work properly when Chrome Developer Tools is docked to main window. Click the button to undock the toolbar in the bottom left corner, then restart the Developer Tools.</p>
+
+            <p>That's about it. Have fun and <a href="http://www.fajitanachos.com/talk-to-me-goose" target= 
+                "_blank">let me know</a> if you have any problems.</p>
+        </div>
+    </div>
+
+    <div id="unauthorized">
+        <div class = "octocat-wrap">
+            <img class = "octocat" src = "img/octocat.png" />
+        </div>
+
+        <div id = "auth">
+            <span class = "instructions">
+                <p> In order to get started we need to authorize this extension to access your GitHub repos. </p>
+            </span>
+            <button id="authorize-button">Authorize with GitHub</button>
+        </div>
+    </div>
+    
+    <div id="authorized">
+        <div id = "sidebar">
+            <div id="sidebar-header">
+                <div id="sidebar-title">
+                    <img id = "hotfix-icon" src = "icon32.png" />
+                    <span id="hotfix-title">
+                        Hotfix
+                    </span>
+                </div>
+            </div>
+            <div id ="sidebar-body">
+                <div id="user">
+                    <h2>GITHUB USERNAME</h2>
+                    <span id="username"></span>
+                </div>
+                <div id="repository-details">
+                    <div id="repos">
+                        <h2>REPOSITORY</h2>
+                        <label>
+                            <select id="repo-list" name="repo-list">
+                            <option> </option>
+                            </select>
+                        </label>
+                    </div>
+                    <div id="branches">
+                        <h2>BRANCH</h2>
+                        <label>
+                        <select id="branch-list" name="branch-list">
+                        </select>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="edited-resources">
+        
+        </div>
+    </div>
 </div>
 <script src="lib/spin.js"></script>
 <script src="lib/underscore-min.js"></script>

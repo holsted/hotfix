@@ -1,8 +1,8 @@
 {
   "name": "hotfix",
-  "description": "Enables hotfix Chrome extension to do the OAuth dance with Github. Check out gatekeeper on github.",
-  "url": "",
-  "contributors": [],
+  "email" : "andrew@fajitanachos.com"
+  "description": "Enables hotfix Chrome extension to do the OAuth dance with Github. Check out gatekeeper.js on github.",
+  "url": "http://www.fajitanachos.com",
   "dependencies": {
     "express": "3.1.x"
   },
