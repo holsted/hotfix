@@ -14,11 +14,15 @@ Spinner.js - https://github.com/fgnass/spin.js
 
 hotfix icon - http://www.iconblock.com/
 
+![Alt text](/img/screenshot1.png "hotfix screenshot")
+
 
 Usage
 =========
+If you are wanting to use the extension, as is, please download it from the Chrome Web Store. If you want 
+to fork the project and set up your own implementation, you can follow the steps below. 
 
-This project is comprised of two parts (each with their own respective directory).
+hotfix is comprised of two parts (each with their own respective directory).
 
 1. The actual chrome extension (chrome-extension).
 
