@@ -23,8 +23,10 @@
         var data = {};
         data.accessTokenDate = new Date().valueOf();
         data.accessToken = JSON.parse(response).token;
-        chrome.extension.sendMessage({greeting: "reload_background", data: data}, function(response){});
-        callback();
+        chrome.extension.sendMessage({greeting: "reload_background", data: data}, function(response){
+            callback();
+        });
+        
     });
 
   

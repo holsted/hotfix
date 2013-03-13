@@ -54,15 +54,7 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
     if (request.greeting == "logout") {
         chrome.windows.create({'url':'https://github.com/logout'}, function(window){
-            setTimeout(function(){
-                chrome.windows.remove(window.id);
-            },2000);
-            
             chrome.tabs.sendMessage(sender.tab.id, {greeting: "unload_panel"}, function(response) {});
-        });
-        chrome.tabs.executeScript(null,{
-            code:"document.getElementsByTagName('form')[1].style.display='none';document.getElementsByTagName('form')[1].submit();",
-            runAt: "document_end"
         });
     }
 });
