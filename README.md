@@ -1,7 +1,7 @@
 hotfix
 =========
 
-Hotfix is a chrome extension that lets you push changes from 
+hotfix is a chrome extension that lets you push changes from 
 Chrome Developer Tools directly to GitHub. 
 
 It utilizes several open source libraries and images which are listed below to give credit where it's due.
@@ -14,7 +14,7 @@ Spinner.js - https://github.com/fgnass/spin.js
 
 hotfix icon - http://www.iconblock.com/
 
-![Alt text](/img/screenshot1.png "hotfix screenshot")
+![Alt text](/chrome-extension/img/screenshot2.png "hotfix screenshot")
 
 
 Usage
@@ -28,7 +28,7 @@ hotfix is comprised of two parts (each with their own respective directory).
 
 2. A tiny node.js server (server).
 
-First, you need to setup a Node.js server and push the contents of the /server directory to your new server. You'll probably want to update the package.json file or even fork the project directly from gatekeeper.js. Hotfix is currently hosted at hotfix.nodejitsu.com, but any server with Node.js installed will do. 
+First, you will need to setup a Node.js server and push the contents of the /server directory to your new server. You'll probably want to update the package.json file or even fork the project directly from gatekeeper.js. Hotfix is currently hosted at hotfix.nodejitsu.com, but any server with Node.js installed will do. 
 
 Next, register a new application on GitHub. Look under Account Settings -> Applications -> Register new application. You'll need to enter a name for your application, and use your new node.js server URL for the Main URL and Callback URL. (For example: hotfix.nodejitsu.com)
 
