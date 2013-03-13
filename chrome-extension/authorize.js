@@ -49,12 +49,15 @@
     
     function callback(error) {
 
-        // Check if it's the users first time to authorize with GitHub. If so, show some welcome instructions
+        // Check if it's the users first time to authorize with GitHub. If so, show the welcome instructions
+        // and save to localStorage.
+
         if(!localStorage.getItem('hotfix-welcome')){
             document.getElementById('welcome').style.display = 'block';
             localStorage.setItem('hotfix-welcome', 'true');
         }
 
+        // If the user has authorized with GitHub before, just close the window.
         // The following works around bug: crbug.com/84201
         else{
             window.open('', '_self', '');
