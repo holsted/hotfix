@@ -41,8 +41,7 @@ select {
 }
 
 .file-name {
-	font-weight:bold;
-	color: rgb(110, 116, 128);
+	color: #4586c7;
 }
 
 .overlay{
@@ -56,13 +55,12 @@ select {
 
 .source {
 	color: rgb(110, 116, 128);
-	font-size: 16px;
+	font-size: 18px;
 	line-height: 20px;
 	padding-right:5px;
 	width:100%;
 	overflow:auto;
 	margin-bottom:5px;
-	font-weight:bold;
 	vertical-align:middle;
 }
 
@@ -86,7 +84,9 @@ select {
 }
 
 .commit-wrapper{
+	display:block;
 	padding-left: 15px;
+	clear:both;
 }
 
 .resource {
@@ -115,6 +115,36 @@ select {
 	display:block;
 	margin-bottom:6px;
 	padding-left:15px;	
+}
+
+.resource li span[contenteditable="true"]{
+	border:1px solid #ddd;
+	color: rgb(110, 116, 128);
+	padding:2px;
+}
+
+
+.resource-path, .resource-label{
+	display:inline-block;
+}
+
+.resource-path, .save-path {
+	color: #4586c7;
+}
+.edit-path, .save-path{
+	display:inline-block;
+	cursor:pointer;
+	font-size:11px;
+	margin-top:2px;
+	margin-left:5px;
+}
+
+.edit-path:hover{
+	color: #4586c7;
+}
+
+.save-path:hover{
+	color: rgb(110, 116, 128);
 }
 
 .remove-resource {

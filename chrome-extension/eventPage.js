@@ -1,14 +1,15 @@
-//This page is mainly used to pass messages between devtools.js
-//and panel.js. The two pages cannot directly communicate with each other so we
-//have to use this background script to as a middle man. 
+// This page is mainly used to pass messages between devtools.js
+// and panel.js. The two pages cannot directly communicate with each other so we
+// have to use this background script to as a middle man. 
 
-//Declared a global here because it's the only way I could figure out 
-//how to send a message from authcomplete.js to panel.js. I'm sure there are 
-//better ways. 
+// Declared a global here because it's the only way I could figure out 
+// how to send a message from authcomplete.js to panel.js. I'm sure there are 
+// better ways. 
 var panelId;
 
-//Listens for a message from devtools.js. Once received opens a new window to 
-//authorize the user with GitHub.
+// Listens for a message from devtools.js. Once received opens a new window to 
+// authorize the user with GitHub.
+
 chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
     if (request.greeting == "authorize_me"){
         panelId = sender.tab.id;
@@ -17,7 +18,8 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
     }
 });
 
-//Listens for a message form devtools.js to reload panel.html on succesful auth
+// Listens for a message form devtools.js to reload panel.html on succesful auth
+
 chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
     if (request.greeting == "reload_background"){
         chrome.tabs.sendMessage(panelId, {greeting: "reload_panel", data: request.data}, function(response) {});
@@ -25,9 +27,10 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
     }
 });
 
-//Passes a message from devtools.js to panel.js to update the resources
-//panel.js sends a response containing the resourceArray that is created in panel.js
-//This is done to ensure that both arrays are in sync
+// Passes a message from devtools.js to panel.js to update the resources
+// panel.js sends a response containing the resourceArray that is created in panel.js
+// This is done to ensure that both arrays are in sync
+
 chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
     if (request.greeting == "update resources"){
         if(sender.tab.id == -1){
@@ -40,17 +43,28 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 });
 
 
-//When a resource is removed in panel.js this makes passes a message to
-//devtools.js to make sure it gets removed in the other array
+
+// When a resource is removed in panel.js this makes passes a message to
+// devtools.js to make sure it gets removed in the other array
+
 chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
     if (request.greeting == "remove resource") {
         chrome.tabs.sendMessage(sender.tab.id, {greeting: "update array", data: request.data}, function(response) {});
     }
 });
 
+// When a resource path is edited in panel.js, this passes a message to
+// devtools.js to make sure it gets removed in the other 
 
-//receives a message from panel.js when the logout link is clicked. 
-//logs the user out of GitHub, clears local storage, and refreshes panel.html
+chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
+    if (request.greeting == "update resource") {
+        chrome.tabs.sendMessage(sender.tab.id, {greeting: "update resources", data: request.data}, function(response) {});
+    }
+});
+
+// Receives a message from panel.js when the logout link is clicked. 
+// logs the user out of GitHub, clears local storage, and refreshes panel.html
+
 chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
     if (request.greeting == "logout") {
         chrome.windows.create({'url':'https://github.com/logout'}, function(window){

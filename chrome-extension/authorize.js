@@ -17,20 +17,35 @@
     }
 
       
-    // Get the access token and pass it on to panel.js to be saved in sessionStorage.
+    // Get the access token and username and pass them on to panel.js to be saved in localStorage.
     
     var accessToken = getAccessToken(authCode, function(response){
         var data = {};
         data.accessTokenDate = new Date().valueOf();
         data.accessToken = JSON.parse(response).token;
-        chrome.extension.sendMessage({greeting: "reload_background", data: data}, function(response){
-            callback();
-        });
         
+        var github = new Github({
+            token: data.accessToken,
+            auth: "oauth"
+        });
+
+        var user = github.getUser();
+
+        // Get the details for the current user.
+
+        var currentUser = user.currentUser(function(err, user){
+
+            // Add the username to the data object.
+
+            data.username = user.login;
+            chrome.extension.sendMessage({greeting: "reload_background", data: data}, function(response){
+                callback();
+            });
+        });     
     });
 
   
-    // Get the access token from github and send it to panel.js to be saved in sessionStorage
+    // Get the access token from github and send it to panel.js to be saved in localStorage
 
     function getAccessToken(authorizationCode, callback){
         var xhr = new XMLHttpRequest();

@@ -4,7 +4,7 @@
     // so we should show the authorization page, otherwise the user is authenticated 
     // and we can proceed.
 
-    if(!sessionStorage.getItem('hotfix')){
+    if(!localStorage.getItem('hotfix')){
         document.getElementById('unauthorized').style.display = 'block';   
     }
     else{
@@ -28,9 +28,8 @@
     
         // Get all of the items stored in local storage and JSON.parse them.
 
-        var hotfix = JSON.parse(sessionStorage['hotfix']);
+        var hotfix = JSON.parse(localStorage['hotfix']);
 
-        
         // Get the access token that we will use to authenticate with github.
         // Initiate github.js instance.
 
@@ -39,19 +38,10 @@
             auth: "oauth"
         });
 
-    
         // Initiate a user in github.js.
         var user = github.getUser();
-        
-        // Get the details for the current user.
 
-        var currentUser = user.currentUser(function(err, user){
-
-            // Add the username to the hotfix object.
-
-            hotfix.username = user.login;
-            
-            //Insert the username with a link to their GitHub profile.
+         //Insert the username with a link to their GitHub profile.
 
             var showUser = document.createElement('li');
             var userName = document.createTextNode(hotfix.username);
@@ -72,7 +62,7 @@
             document.getElementById("logout").addEventListener("click", function() {
                 chrome.extension.sendMessage({greeting: "logout"}, function(response) { });
             });
-        });
+        
         
         
         
@@ -173,14 +163,23 @@
                     // Create an li element and add the full path to it.
 
                     var li = document.createElement('li');
-                    var linkText = document.createTextNode(resourcePath);
-                    var fileLabel = document.createTextNode('Full commit path: ');
+                    var resourceText = document.createTextNode(resourcePath);
+                    var resourceLabel = document.createTextNode('Full commit path: ');
+                    resourceLabel.className = 'resource-label';
+                    var resourceSpan = document.createElement('span');
+                    resourceSpan.className = 'resource-path';
+                    resourceSpan.appendChild(resourceText);
+                    var editPath = document.createElement('span');
+                    editPath.className = ('edit-path');
+                    editPathText = document.createTextNode('Edit');
+                    editPath.appendChild(editPathText); 
                     
                     // Append the anchor element to the li element we just created.
 
-                    a.appendChild(linkText);
-                    li.appendChild(fileLabel);
-                    li.appendChild(a);
+                    
+                    li.appendChild(resourceLabel);
+                    li.appendChild(resourceSpan);
+                    li.appendChild(editPath);
                     
                     // Create a span to hold the remove icon and give it a class. 
 
@@ -264,6 +263,63 @@
                     });
                 }
                 
+                // Get all of the edit resource span
+
+                var editPath = document.getElementsByClassName('edit-path');
+                
+                // Add an event listener for each edit resource span
+
+                for (var i = 0; i < editPath.length; i++) {
+                    editPath[i].addEventListener('click', function() {
+
+                        // Get the numeric id of the resource div which will correspond
+                        // to the resources id in the panelResources.
+            
+                        var parentId = this.parentNode.parentNode.id;
+                        var id = parentId.replace('resource-','');
+                     
+                        for (var key in panelResources) {
+                            if (panelResources[key].hasOwnProperty('id') && panelResources[key].id == id) {
+                                
+                                // Get the text of the current path link.
+                                var editButton = this;
+                                var path = this.previousSibling;
+
+
+                                // Create a new contentEditable span with that text
+
+                                path.contentEditable = true;
+
+
+                                // Create save button.
+
+                                var savePath = document.createElement('span');
+                                var savePathText = document.createTextNode('Save');
+                                savePath.appendChild(savePathText);
+                                savePath.className = "save-path";
+
+                                // Add event listener for new save button.
+
+                                savePath.addEventListener('click', function() {
+                                    
+                                    path.contentEditable = false;
+                                    panelResources[id].path = path.innerText;
+                                    this.style.display = 'none';
+                                    editButton.style.display = "inline-block";
+
+                                // Send a message to Dev Tools.js via eventPage.js to make sure the arrays stay in sync.
+                                    chrome.extension.sendMessage({greeting: "update resource", data: panelResources}, function(response) {});
+
+                                });
+
+                                this.parentNode.insertBefore(savePath);
+
+                                // Remove old path link and edit button.
+                                this.style.display = 'none';
+                            }            
+                        }
+                    });
+                }
                 // Get all of our commit buttons.
 
                 var elements = document.getElementsByClassName('commit-button');
@@ -337,6 +393,8 @@
                             repo.write(branch,panelResources[id].path, panelResources[id].content,commitMessage,function(err){
                                 if(err){
                                     alert('Sorry. There was a problem pushing your commit to GitHub. Please try again.');
+                                    spinner.stop();
+                                    parentNode.remove();
                                 }
                                 else{
 
@@ -426,7 +484,7 @@
 
     chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
         if (request.greeting == "reload_panel"){
-            sessionStorage['hotfix'] = JSON.stringify(request.data);
+            localStorage['hotfix'] = JSON.stringify(request.data);
             document.location.reload();
         }
     }); 
@@ -435,7 +493,7 @@
 
     chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
         if (request.greeting == "unload_panel"){
-            sessionStorage.clear();
+            localStorage.removeItem('hotfix');
             document.location.reload();
         }
     }); 

@@ -68,12 +68,17 @@ chrome.devtools.panels.create("Hotfix", "img/toolbar.png", "/panel.html", functi
 			for (var key in devResources) {
 				if (devResources[key].hasOwnProperty('id') && devResources[key].id == id) {
 					devResources.splice(key,1);
-					console.log(devResources);
 				}   
 			}
 		}
 	});
 	
+	chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
+		if (request.greeting == "update resources"){
+			devResources = request.data;
+		}
+	});
+
 	// Fired when the hotfix panel is clicked on. Sends the full devResources array to panel.js
 	// to generate a list of resources that have been edited. 
 
