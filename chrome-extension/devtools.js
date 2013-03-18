@@ -74,7 +74,7 @@ chrome.devtools.panels.create("Hotfix", "img/toolbar.png", "/panel.html", functi
 	});
 	
 	chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
-		if (request.greeting == "update resources"){
+		if (request.greeting == "update devResources"){
 			devResources = request.data;
 		}
 	});

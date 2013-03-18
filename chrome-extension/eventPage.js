@@ -57,8 +57,8 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 // devtools.js to make sure it gets removed in the other 
 
 chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
-    if (request.greeting == "update resource") {
-        chrome.tabs.sendMessage(sender.tab.id, {greeting: "update resources", data: request.data}, function(response) {});
+    if (request.greeting == "update devResource") {
+        chrome.tabs.sendMessage(sender.tab.id, {greeting: "update devResources", data: request.data}, function(response) {});
     }
 });
 

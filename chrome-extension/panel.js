@@ -131,8 +131,9 @@
                     if (resourcePath.charAt(0) == "/") {
                         resourcePath = resourcePath.substr(1);
                     }
-                    panelResources[i].path = resourcePath;
-                    
+                    if(!panelResources[i].path){
+                        panelResources[i].path = resourcePath;
+                    }
                     // Create a div to hold the resource and give it an id.
 
                     var resourceDiv = document.createElement('div');
@@ -151,7 +152,7 @@
 
                     var file = document.createElement('li');
                     var fileText = document.createTextNode('Resource: ');
-                    var fileName = resourcePath.substring(resourcePath.lastIndexOf('/')+1);
+                    var fileName = panelResources[i].path.substring(panelResources[i].path.lastIndexOf('/')+1);
                     var fileNameText = document.createTextNode(fileName);
                     var fileSpan = document.createElement('span');
                     fileSpan.appendChild(fileNameText);
@@ -163,7 +164,7 @@
                     // Create an li element and add the full path to it.
 
                     var li = document.createElement('li');
-                    var resourceText = document.createTextNode(resourcePath);
+                    var resourceText = document.createTextNode(panelResources[i].path);
                     var resourceLabel = document.createTextNode('Full commit path: ');
                     resourceLabel.className = 'resource-label';
                     var resourceSpan = document.createElement('span');
@@ -306,9 +307,9 @@
                                     panelResources[id].path = path.innerText;
                                     this.style.display = 'none';
                                     editButton.style.display = "inline-block";
-
+                                    
                                 // Send a message to Dev Tools.js via eventPage.js to make sure the arrays stay in sync.
-                                    chrome.extension.sendMessage({greeting: "update resource", data: panelResources}, function(response) {});
+                                    chrome.extension.sendMessage({greeting: "update devResource", data: panelResources}, function(response) {});
 
                                 });
 
