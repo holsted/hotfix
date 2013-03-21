@@ -371,7 +371,7 @@
 
                             var commitMessageTextArea = 'commit-message-'+id;
                             commitMessage = document.getElementById(commitMessageTextArea).value;
-                            
+
                             
                             // Check that the user has in fact entered a commit message.
 
@@ -516,6 +516,7 @@
     chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
         if (request.greeting == "unload_panel"){
             localStorage.removeItem('hotfix');
+            localStorage.removeItem('hotfix-welcome');
             document.location.reload();
         }
     }); 
