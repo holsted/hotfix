@@ -348,7 +348,7 @@
                             return;
                         }
                         else if(repoName == "No repositories found"){
-                            alert("It appears you haven't created any GitHub repositories. You should create one on GitHub, then logout of hotfix and log back in.");
+                            alert("It appears you haven't created any GitHub repositories. You should create one on GitHub, then log out of hotfix and log back in.");
                             return;
                         }
                         else{
@@ -362,7 +362,8 @@
                             
                             // Check that the user has saved the full commit path.
                             var checkPath = parentNode.getElementsByClassName('resource-path')[0];
-                            if (checkPath.contentEditable = true){
+                            if (checkPath.contentEditable == "true"){
+                                
                                 alert('The full commit path needs to be saved.');
                                 return;
                             }
