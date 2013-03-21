@@ -341,10 +341,14 @@
                         var repoList = document.getElementById('repo-list');
                         var repoName = repoList.options[repoList.selectedIndex].text;
                     
-                        // Check that a repository was selected. 
+                        // Check that a valid repository was selected. 
 
                         if(!repoName){
                             alert('Please select a respository on the left');
+                            return;
+                        }
+                        else if(repoName == "No repositories found"){
+                            alert("It appears you haven't created any GitHub repositories. You should create one on GitHub, then logout of hotfix and log back in.");
                             return;
                         }
                         else{
