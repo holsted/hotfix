@@ -360,10 +360,18 @@
                             var parentNode = this.parentNode.parentNode;
                             var id = parentId.replace('resource-','');
                             
+                            // Check that the user has saved the full commit path.
+                            var checkPath = parentNode.getElementsByClassName('resource-path')[0];
+                            if (checkPath.contentEditable = true){
+                                alert('The full commit path needs to be saved.');
+                                return;
+                            }
+
                             // Get commit message from the textarea.
 
                             var commitMessageTextArea = 'commit-message-'+id;
                             commitMessage = document.getElementById(commitMessageTextArea).value;
+                            
                             
                             // Check that the user has in fact entered a commit message.
 
