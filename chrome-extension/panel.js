@@ -74,12 +74,16 @@
             // Stop the spinner that we started on page load.
 
             smallSpinner.stop();
-            
+            console.log(repos);
             // Populate the select list with the users' repos.
-
-            for(var i=0; i < repos.length; i++){
-                var repo = repos[i].name;
-                select.options.add(new Option(repo))
+            if(repos.length<1){
+                select.options.add(new Option('No repositories found'))
+            }
+            else{
+                for(var i=0; i < repos.length; i++){
+                    var repo = repos[i].name;
+                    select.options.add(new Option(repo))
+                }
             }
         });
 
@@ -131,6 +135,11 @@
                     if (resourcePath.charAt(0) == "/") {
                         resourcePath = resourcePath.substr(1);
                     }
+
+                    // If panelResources.path is already set then
+                    // use it instead of generating a new path.
+                    // This lets us persist the commit path when it has been edited by a user.
+
                     if(!panelResources[i].path){
                         panelResources[i].path = resourcePath;
                     }
@@ -152,7 +161,7 @@
 
                     var file = document.createElement('li');
                     var fileText = document.createTextNode('Resource: ');
-                    var fileName = panelResources[i].path.substring(panelResources[i].path.lastIndexOf('/')+1);
+                    var fileName = resourcePath.substring(resourcePath.lastIndexOf('/')+1);
                     var fileNameText = document.createTextNode(fileName);
                     var fileSpan = document.createElement('span');
                     fileSpan.appendChild(fileNameText);
@@ -175,8 +184,8 @@
                     editPathText = document.createTextNode('Edit');
                     editPath.appendChild(editPathText); 
                     
+                    
                     // Append the anchor element to the li element we just created.
-
                     
                     li.appendChild(resourceLabel);
                     li.appendChild(resourceSpan);
@@ -436,7 +445,7 @@
             var repoList = document.getElementById('repo-list');
             var repoName = repoList.options[repoList.selectedIndex].text;
             document.getElementById('branch-list').options.length = 0;
-            if(repoName){
+            if(repoName && repoName !== 'No repositories found'){
     
                 // Get the selected repository details. 
 
