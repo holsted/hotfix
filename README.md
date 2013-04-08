@@ -14,8 +14,6 @@ Spinner.js - https://github.com/fgnass/spin.js
 
 hotfix icon - http://www.iconblock.com/
 
-![Alt text](/chrome-extension/img/screenshot1.png "hotfix screenshot")
-
 
 Usage
 =========
