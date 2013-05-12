@@ -38,8 +38,10 @@
             // Add the username to the data object.
 
             data.username = user.login;
-            chrome.extension.sendMessage({greeting: "reload_background", data: data}, function(response){ });
-            callback();
+            chrome.extension.sendMessage({greeting: "reload_background", data: data}, function(response){ 
+                callback();
+            });
+            
         });     
     });
 
