@@ -456,6 +456,7 @@
 
         document.getElementById('select-user').addEventListener('change',function(){
             var selectList = document.getElementById('select-user');
+            currentUser = selectList.options[selectList.selectedIndex].text;
             var repoList = document.getElementById('repo-list');
             repoList.options.length = 1;
             var repoDiv = document.getElementById('repos');
@@ -469,12 +470,30 @@
                 top: '26px',
                 speed: 1.5
             }).spin(repoDiv);
-
-            currentUser = selectList.options[selectList.selectedIndex].text;
             
             document.getElementById('branches').style.visibility='hidden';
 
-            listRepos = user.userRepos(currentUser,function(err, repos){
+            if(hotfix.username !== currentUser){
+               listRepos = user.orgRepos(currentUser, function(err, repos){
+            
+                // Populate the select list with the users' repos.
+                if(repos.length<1){
+                    repoList.options.add(new Option('No repositories found'))
+                }
+                else{
+                    for(var i=0; i < repos.length; i++){
+                        var repo = repos[i].name;
+                        repoList.options.add(new Option(repo))
+                    }
+                }
+                smallSpinner.stop();
+            }); 
+
+            }
+
+            else{
+
+                listRepos = user.repos(function(err, repos){
             
                 // Populate the select list with the users' repos.
                 if(repos.length<1){
@@ -488,7 +507,10 @@
                 }
                 smallSpinner.stop();
             });
-            // Stop the spinner that we started on page load.
+
+            }
+            
+           
 
                 
 
