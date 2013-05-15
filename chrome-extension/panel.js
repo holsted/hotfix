@@ -74,8 +74,7 @@
 
             // Stop the spinner that we started on page load.
 
-            smallSpinner.stop();
-            console.log(repos);
+        
             // Populate the select list with the users' repos.
             if(repos.length<1){
                 select.options.add(new Option('No repositories found'))
@@ -86,6 +85,8 @@
                     select.options.add(new Option(repo))
                 }
             }
+
+            smallSpinner.stop();
         });
 
         
@@ -455,18 +456,26 @@
 
         document.getElementById('select-user').addEventListener('change',function(){
             var selectList = document.getElementById('select-user');
-             var repoList = document.getElementById('repo-list');
-            currentUser = selectList.options[selectList.selectedIndex].text;
+            var repoList = document.getElementById('repo-list');
             repoList.options.length = 1;
-           document.getElementById('branches').style.visibility='hidden';
+            var repoDiv = document.getElementById('repos');
+            var smallSpinner = new Spinner({
+                color: '#aaa',
+                lines:11,
+                length: 0,
+                width: 3,
+                radius: 6,
+                trail: 46,
+                top: '26px',
+                speed: 1.5
+            }).spin(repoDiv);
+
+            currentUser = selectList.options[selectList.selectedIndex].text;
+            
+            document.getElementById('branches').style.visibility='hidden';
 
             listRepos = user.userRepos(currentUser,function(err, repos){
-                
-
-                // Stop the spinner that we started on page load.
-
-                smallSpinner.stop();
-                
+            
                 // Populate the select list with the users' repos.
                 if(repos.length<1){
                     repoList.options.add(new Option('No repositories found'))
@@ -477,7 +486,11 @@
                         repoList.options.add(new Option(repo))
                     }
                 }
+                smallSpinner.stop();
             });
+            // Stop the spinner that we started on page load.
+
+                
 
         });
 
