@@ -65,7 +65,7 @@ select {
 
 .commit-textarea {
 	display:block;
-	width:500px;
+	width:450px;
 	height:125px;
 	outline:none;
 	margin: 4px 0px 0px 0px;
@@ -305,7 +305,7 @@ select {
 	background-image: -webkit-gradient(linear, left top, left bottom, from(#5C93D5),to(#1553AA));
 	margin-top:1px;
 	height:35px;
-	line-height:34px;
+	position:relative;
 }
 
 #hotfix-title{
@@ -385,15 +385,18 @@ select {
 }
 
 #logout{
-	color: rgb(92, 110, 129);
+	color: #fff;
 	cursor:pointer;
 	font-family: "Helvetica" , arial, sans-serif;
 	font-size:10px;
-	display:inline-block;
+	position:absolute;
+	right:10px;
+	top:12px;
+
 }
 
 #logout:hover{
-	color: #4183c4;
+	text-decoration:underline;
 }
 
 #branches{

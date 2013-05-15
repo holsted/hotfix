@@ -42,33 +42,34 @@
         var user = github.getUser();
 
          //Insert the username with a link to their GitHub profile.
-
-            var showUser = document.createElement('li');
-            var userName = document.createTextNode(hotfix.username);
-            var userLink = document.createElement('a');
-            userLink.appendChild(userName);
-            userLink.href = "https://www.github.com/"+hotfix.username;
-            userLink.target = '_blank';
-            showUser.appendChild(userLink);
-            document.getElementById('username').appendChild(showUser);
-            var logout = document.createElement('span');
-            logout.id = 'logout';
-            var logoutText = document.createTextNode('(logout)');
-            logout.appendChild(logoutText);
-            document.getElementById('user').appendChild(logout);
-            
-             //Send a message to eventPage.js to log out current user out of GitHub    
-
-            document.getElementById("logout").addEventListener("click", function() {
-                chrome.extension.sendMessage({greeting: "logout"}, function(response) { });
-            });
+        var currentUser = hotfix.username;
+        var selectUser = document.getElementById('select-user');
+        var userOption = document.createElement('option');
+        userOption.text = currentUser;
+        selectUser.options.add(userOption);
+        var logout = document.createElement('span');
+        logout.id = 'logout';
+        var logoutText = document.createTextNode('logout');
+        logout.appendChild(logoutText);
+        document.getElementById('sidebar-title').appendChild(logout);
         
+         //Send a message to eventPage.js to log out current user out of GitHub    
+
+        document.getElementById("logout").addEventListener("click", function() {
+            chrome.extension.sendMessage({greeting: "logout"}, function(response) { });
+        });
         
+         var userOrgs = user.orgs(function(err, orgs) {
+            for(var i=0; i < orgs.length; i++){
+                var org = orgs[i].login;
+                selectUser.options.add(new Option(org))
+            }
+        });
         
         
         // List the authenticated users repositories.
 
-        listRepos = user.repos(function(err, repos){
+        listRepos = user.userRepos(currentUser,function(err, repos){
             var select = document.getElementById('repo-list');
 
             // Stop the spinner that we started on page load.
@@ -412,7 +413,7 @@
 
                             var branchList = document.getElementById('branch-list');
                             var branch = branchList.options[branchList.selectedIndex].text;
-                            var repo = github.getRepo(hotfix.username,repoName);
+                            var repo = github.getRepo(currentUser,repoName);
                             repo.write(branch,panelResources[id].path, panelResources[id].content,commitMessage,function(err){
                                 if(err){
                                     alert('Sorry. There was a problem pushing your commit to GitHub. Please try again.');
@@ -452,6 +453,35 @@
            sendResponse({updatedArray : panelResources });
         }); 
 
+        document.getElementById('select-user').addEventListener('change',function(){
+            var selectList = document.getElementById('select-user');
+             var repoList = document.getElementById('repo-list');
+            currentUser = selectList.options[selectList.selectedIndex].text;
+            repoList.options.length = 1;
+           document.getElementById('branches').style.visibility='hidden';
+
+            listRepos = user.userRepos(currentUser,function(err, repos){
+                
+
+                // Stop the spinner that we started on page load.
+
+                smallSpinner.stop();
+                
+                // Populate the select list with the users' repos.
+                if(repos.length<1){
+                    repoList.options.add(new Option('No repositories found'))
+                }
+                else{
+                    for(var i=0; i < repos.length; i++){
+                        var repo = repos[i].name;
+                        repoList.options.add(new Option(repo))
+                    }
+                }
+            });
+
+        });
+
+
         // Add listener for a change on the repo-list select element.
 
         document.getElementById('repo-list').addEventListener('change',function(){
@@ -462,7 +492,7 @@
     
                 // Get the selected repository details. 
 
-                var repo = github.getRepo(hotfix.username, repoName);
+                var repo = github.getRepo(currentUser, repoName);
                 var branch = document.getElementById('branches');
                 
                 // Show a spinner while the branches load.
