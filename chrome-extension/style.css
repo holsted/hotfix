@@ -411,11 +411,11 @@ select {
 		padding-right:18px;
 	}
 	
-    #repos label, #branches label{
+    #repos label, #branches label, #user label{
 		position:relative;
 	}
 	
-	#branches label:after, #repos label:after {
+	#branches label:after, #repos label:after , #user label:after{
 		content:'>';
 		font:12px "Consolas", monospace;
 		color:#ccc;

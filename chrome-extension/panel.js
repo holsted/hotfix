@@ -9,9 +9,9 @@
     }
     else{
         document.getElementById('authorized').style.display = 'block';
-        var repoDiv = document.getElementById('repos');
+        
     
-
+        var repoDiv = document.getElementById('repos');
         //Uses spin.js to start a loading spinner in the repository div
 
         var smallSpinner = new Spinner({
@@ -19,7 +19,7 @@
             lines:11,
             length: 0,
             width: 3,
-            radius: 6,
+            radius: 5,
             trail: 46,
             top: '26px',
             speed: 1.5
@@ -41,25 +41,21 @@
         // Initiate a user in github.js.
         var user = github.getUser();
 
-         //Insert the username with a link to their GitHub profile.
+        console.log(user);
+
+         //Append the current user and their orgs to the user select list
         var currentUser = hotfix.username;
         var selectUser = document.getElementById('select-user');
         var userOption = document.createElement('option');
         userOption.text = currentUser;
         selectUser.options.add(userOption);
-        var logout = document.createElement('span');
-        logout.id = 'logout';
-        var logoutText = document.createTextNode('logout');
-        logout.appendChild(logoutText);
-        document.getElementById('sidebar-title').appendChild(logout);
+       
         
          //Send a message to eventPage.js to log out current user out of GitHub    
 
-        document.getElementById("logout").addEventListener("click", function() {
-            chrome.extension.sendMessage({greeting: "logout"}, function(response) { });
-        });
+       
         
-         var userOrgs = user.orgs(function(err, orgs) {
+        var userOrgs = user.orgs(function(err, orgs) {
             for(var i=0; i < orgs.length; i++){
                 var org = orgs[i].login;
                 selectUser.options.add(new Option(org))
@@ -69,7 +65,7 @@
         
         // List the authenticated users repositories.
 
-        listRepos = user.userRepos(currentUser,function(err, repos){
+        var listRepos = user.userRepos(currentUser,function(err, repos){
             var select = document.getElementById('repo-list');
 
             // Stop the spinner that we started on page load.
@@ -455,6 +451,7 @@
         }); 
 
         document.getElementById('select-user').addEventListener('change',function(){
+           
             var selectList = document.getElementById('select-user');
             currentUser = selectList.options[selectList.selectedIndex].text;
             var repoList = document.getElementById('repo-list');
@@ -474,46 +471,44 @@
             document.getElementById('branches').style.visibility='hidden';
 
             if(hotfix.username !== currentUser){
-               listRepos = user.orgRepos(currentUser, function(err, repos){
+               listRepos = user.orgRepos(currentUser, function(err, orgRepos){
             
-                // Populate the select list with the users' repos.
-                if(repos.length<1){
-                    repoList.options.add(new Option('No repositories found'))
-                }
-                else{
-                    for(var i=0; i < repos.length; i++){
-                        var repo = repos[i].name;
-                        repoList.options.add(new Option(repo))
+                    // Populate the select list with the organization's repos.
+                   
+                    if(orgRepos.length<1){
+                        repoList.options.add(new Option('No repositories found'))
                     }
-                }
-                smallSpinner.stop();
-            }); 
+                    else{
+
+                        for(var i=0; i < orgRepos.length; i++){
+                            var orgRepo = orgRepos[i].name;
+                            repoList.options.add(new Option(orgRepo))
+                        }
+                    }
+                    smallSpinner.stop();
+                }); 
 
             }
 
             else{
-
+                 
                 listRepos = user.repos(function(err, repos){
             
-                // Populate the select list with the users' repos.
-                if(repos.length<1){
-                    repoList.options.add(new Option('No repositories found'))
-                }
-                else{
-                    for(var i=0; i < repos.length; i++){
-                        var repo = repos[i].name;
-                        repoList.options.add(new Option(repo))
+                    // Populate the select list with the users' repos.
+
+                    if(repos.length<1){
+                        repoList.options.add(new Option('No repositories found'))
                     }
-                }
-                smallSpinner.stop();
-            });
+                    else{
+                        for(var i=0; i < repos.length; i++){
+                            var repo = repos[i].name;
+                            repoList.options.add(new Option(repo))
+                        }
+                    }
+                    smallSpinner.stop();
+                });
 
-            }
-            
-           
-
-                
-
+            } 
         });
 
 
@@ -592,6 +587,10 @@
     document.getElementById("authorize-button").addEventListener("click", function() {
         chrome.extension.sendMessage({greeting: "authorize_me"}, function(response) {});
     });
+
+     document.getElementById("logout").addEventListener("click", function() {
+            chrome.extension.sendMessage({greeting: "logout"}, function(response) { });
+        });
 })();
 
     
