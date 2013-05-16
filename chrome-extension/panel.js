@@ -1,5 +1,4 @@
 (function(){
-    
     // If there is no hotfix data in local storage then the user is not authenicated 
     // so we should show the authorization page, otherwise the user is authenticated 
     // and we can proceed.
@@ -10,22 +9,6 @@
     else{
         document.getElementById('authorized').style.display = 'block';
         
-    
-        var repoDiv = document.getElementById('repos');
-        //Uses spin.js to start a loading spinner in the repository div
-
-        var smallSpinner = new Spinner({
-            color: '#aaa',
-            lines:11,
-            length: 0,
-            width: 3,
-            radius: 5,
-            trail: 46,
-            top: '26px',
-            speed: 1.5
-        }).spin(repoDiv);
-    
-    
         // Get all of the items stored in local storage and JSON.parse them.
 
         var hotfix = JSON.parse(localStorage['hotfix']);
@@ -41,18 +24,12 @@
         // Initiate a user in github.js.
         var user = github.getUser();
 
-        console.log(user);
-
          //Append the current user and their orgs to the user select list
         var currentUser = hotfix.username;
         var selectUser = document.getElementById('select-user');
         var userOption = document.createElement('option');
         userOption.text = currentUser;
         selectUser.options.add(userOption);
-       
-        
-         //Send a message to eventPage.js to log out current user out of GitHub    
-
        
         
         var userOrgs = user.orgs(function(err, orgs) {
@@ -62,30 +39,7 @@
             }
         });
         
-        
-        // List the authenticated users repositories.
-
-        var listRepos = user.userRepos(currentUser,function(err, repos){
-            var select = document.getElementById('repo-list');
-
-            // Stop the spinner that we started on page load.
-
-        
-            // Populate the select list with the users' repos.
-            if(repos.length<1){
-                select.options.add(new Option('No repositories found'))
-            }
-            else{
-                for(var i=0; i < repos.length; i++){
-                    var repo = repos[i].name;
-                    select.options.add(new Option(repo))
-                }
-            }
-
-            smallSpinner.stop();
-        });
-
-        
+        showRepos(currentUser);
 
         // Generate a list of resources that has been edited.
 
@@ -453,63 +407,18 @@
         document.getElementById('select-user').addEventListener('change',function(){
            
             var selectList = document.getElementById('select-user');
+
             currentUser = selectList.options[selectList.selectedIndex].text;
+
             var repoList = document.getElementById('repo-list');
+
             repoList.options.length = 1;
-            var repoDiv = document.getElementById('repos');
-            var smallSpinner = new Spinner({
-                color: '#aaa',
-                lines:11,
-                length: 0,
-                width: 3,
-                radius: 6,
-                trail: 46,
-                top: '26px',
-                speed: 1.5
-            }).spin(repoDiv);
             
             document.getElementById('branches').style.visibility='hidden';
 
-            if(hotfix.username !== currentUser){
-               listRepos = user.orgRepos(currentUser, function(err, orgRepos){
-            
-                    // Populate the select list with the organization's repos.
-                   
-                    if(orgRepos.length<1){
-                        repoList.options.add(new Option('No repositories found'))
-                    }
-                    else{
-
-                        for(var i=0; i < orgRepos.length; i++){
-                            var orgRepo = orgRepos[i].name;
-                            repoList.options.add(new Option(orgRepo))
-                        }
-                    }
-                    smallSpinner.stop();
-                }); 
-
-            }
-
-            else{
-                 
-                listRepos = user.repos(function(err, repos){
-            
-                    // Populate the select list with the users' repos.
-
-                    if(repos.length<1){
-                        repoList.options.add(new Option('No repositories found'))
-                    }
-                    else{
-                        for(var i=0; i < repos.length; i++){
-                            var repo = repos[i].name;
-                            repoList.options.add(new Option(repo))
-                        }
-                    }
-                    smallSpinner.stop();
-                });
-
-            } 
-        });
+            showRepos(currentUser);
+           
+            });
 
 
         // Add listener for a change on the repo-list select element.
@@ -521,43 +430,11 @@
             if(repoName && repoName !== 'No repositories found'){
     
                 // Get the selected repository details. 
-
-                var repo = github.getRepo(currentUser, repoName);
-                var branch = document.getElementById('branches');
+                showBranches(repoName);
                 
-                // Show a spinner while the branches load.
-
-                var smallSpinner = new Spinner({
-                    color: '#aaa',
-                    lines:11,
-                    length: 0,
-                    width: 3,
-                    radius: 6,
-                    trail: 46,
-                    top: '26px',
-                    speed: 1.5  
-                }).spin(branch);
-                branch.style.visibility = 'visible';
-        
-                // List all branches of the selected repository.
-
-                repo.listBranches(function(err, branches){
-                
-                    var select = document.getElementById('branch-list');
-                    for(var i=0; i < branches.length; i++){
-                        var branch = branches[i];
-                        select.options.add(new Option(branch))
-                    }
-                
-                    //Stop the spinner.
-
-                    smallSpinner.stop();
-                });
             }
             else{
-
                 //Hide the branches if user unselects the repository.
-
                 document.getElementById('branches').style.visibility = 'hidden';
             }
         });
@@ -588,9 +465,74 @@
         chrome.extension.sendMessage({greeting: "authorize_me"}, function(response) {});
     });
 
-     document.getElementById("logout").addEventListener("click", function() {
+     //Send a message to eventPage.js to log out current user out of GitHub  
+    document.getElementById("logout").addEventListener("click", function() {
             chrome.extension.sendMessage({greeting: "logout"}, function(response) { });
+    });
+
+
+
+     function loadSpinner(location){
+        return new Spinner({
+            color: '#aaa',
+            lines:11,
+            length: 0,
+            width: 3,
+            radius: 5,
+            trail: 46,
+            top: '26px',
+            speed: 1.5
+        }).spin(location);
+    };
+
+    // List user/organization repositories.
+
+    function showRepos(currentUser, cb){
+        var repoDiv = document.getElementById('repos');
+
+        //Load spinner in the repository div while we wait
+        var spinner = loadSpinner(repoDiv);
+
+        var getRepos = user.userRepos(currentUser,function(err, repos){
+            var select = document.getElementById('repo-list');
+
+            // Populate the select list with the users' repos.
+            if(repos.length<1){
+                select.options.add(new Option('No repositories found'))
+            }
+            else{
+                for(var i=0; i < repos.length; i++){
+                    var repo = repos[i].name;
+                    select.options.add(new Option(repo))
+                }
+            }
+            spinner.stop();
         });
+    }
+
+    function showBranches(repoName){
+        var repo = github.getRepo(currentUser, repoName);
+        var branchDiv = document.getElementById('branches');
+        
+        // Show a spinner while the branches load.
+        var spinner = loadSpinner(branchDiv)
+        
+        // Show the branch select box
+        branchDiv.style.visibility = 'visible';
+
+        // List all branches of the selected repository.
+        repo.listBranches(function(err, branches){
+        
+            var select = document.getElementById('branch-list');
+            for(var i=0; i < branches.length; i++){
+                var branch = branches[i];
+                select.options.add(new Option(branch))
+            }
+        
+            //Stop the spinner.
+            spinner.stop();
+        });
+    }
 })();
 
     
