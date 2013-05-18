@@ -215,11 +215,11 @@
     function removeResource(){
         // Get all of the remove resource spans
 
-        var resources = document.getElementsByClassName('remove-resource');
+        var removeButton = document.getElementsByClassName('remove-resource');
 
-        for (var i = 0; i < resources.length; i++) {
+        for (var i = 0; i < removeButton.length; i++) {
                    
-            resources[i].addEventListener('click', function() {
+            removeButton[i].addEventListener('click', function() {
                 // Get the numeric id of the resource div which will correspond
                 // to the resources id in the resources.
 
