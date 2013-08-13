@@ -40,6 +40,7 @@
             data.username = user.login;
             chrome.extension.sendMessage({greeting: "reload_background", data: data}, function(response){      
                 if(!localStorage.getItem('hotfix-welcome')){
+                    document.getElementById('loading').style.display = 'none';
                     document.getElementById('welcome').style.display = 'block';
                     localStorage.setItem('hotfix-welcome', 'true');
                 }
