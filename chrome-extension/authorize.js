@@ -38,8 +38,18 @@
             // Add the username to the data object.
 
             data.username = user.login;
-            chrome.extension.sendMessage({greeting: "reload_background", data: data}, function(response){ 
-                callback();
+            chrome.extension.sendMessage({greeting: "reload_background", data: data}, function(response){      
+                if(!localStorage.getItem('hotfix-welcome')){
+                    document.getElementById('welcome').style.display = 'block';
+                    localStorage.setItem('hotfix-welcome', 'true');
+                }
+
+                // If the user has authorized with GitHub before, just close the window.
+                // The following works around bug: crbug.com/84201
+                else{
+                    window.open('', '_self', '');
+                    window.close();
+                }
             });
             
         });     
@@ -60,25 +70,5 @@
         }; 
     };
 
-
-    // Once we get there the Oauth flow is complete and we can close the open window. Need to add error handling back in 
-    
-    function callback(error) {
-
-        // Check if it's the users first time to authorize with GitHub. If so, show the welcome instructions
-        // and save to localStorage.
-
-        if(!localStorage.getItem('hotfix-welcome')){
-            document.getElementById('welcome').style.display = 'block';
-            localStorage.setItem('hotfix-welcome', 'true');
-        }
-
-        // If the user has authorized with GitHub before, just close the window.
-        // The following works around bug: crbug.com/84201
-        else{
-            window.open('', '_self', '');
-            window.close();
-        }
-    }  
 })();  
       

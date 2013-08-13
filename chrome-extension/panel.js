@@ -108,7 +108,9 @@
     chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
         if (request.greeting == "reload_panel"){
             localStorage['hotfix'] = JSON.stringify(request.data);
-            document.location.reload();
+            setTimeout(function(){
+                document.location.reload();
+            },300);
         }
     }); 
     
