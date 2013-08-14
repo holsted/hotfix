@@ -39,7 +39,7 @@
         showRepos(currentUser);
 
         // Generate a list of resources that has been edited.
-        chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
+        chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             if (request.greeting == "show resources") {
                 document.getElementById('edited-resources').innerHTML = '';
                 
@@ -105,18 +105,16 @@
     
     //Listen for a message from eventPage.js to reload the panel after successful authentication.
 
-    chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
+    chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         if (request.greeting == "reload_panel"){
-            localStorage['hotfix'] = JSON.stringify(request.data);
-            setTimeout(function(){
-                document.location.reload();
-            },300);
+            localStorage.setItem('hotfix', JSON.stringify(request.data));
+            document.location.reload(true);
         }
     }); 
     
     //Listen for a message from eventPage.js to reload the panel after successful authentication.
 
-    chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
+    chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         if (request.greeting == "unload_panel"){
             localStorage.removeItem('hotfix');
             localStorage.removeItem('hotfix-welcome');
@@ -127,12 +125,12 @@
     // Send a message to eventPage.js to open a new window with the github authorization url.
 
     document.getElementById("authorize-button").addEventListener("click", function() {
-        chrome.extension.sendMessage({greeting: "authorize_me"}, function(response) {});
+        chrome.runtime.sendMessage({greeting: "authorize_me"}, function(response) {});
     });
 
      //Send a message to eventPage.js to log out current user out of GitHub  
     document.getElementById("logout").addEventListener("click", function() {
-            chrome.extension.sendMessage({greeting: "logout"}, function(response) { });
+            chrome.runtime.sendMessage({greeting: "logout"}, function(response) { });
     });
 
     function loadSpinner(location){
@@ -235,7 +233,7 @@
                         // DevArray
 
                         this.parentNode.parentNode.remove();
-                        chrome.extension.sendMessage({greeting: "remove resource", data: id}, function(response) {});
+                        chrome.runtime.sendMessage({greeting: "remove resource", data: id}, function(response) {});
                     }            
                 }
             });
@@ -287,7 +285,7 @@
                             editButton.style.display = "inline-block";
                             
                         // Send a message to Dev Tools.js via eventPage.js to make sure the arrays stay in sync.
-                            chrome.extension.sendMessage({greeting: "update devResource", data: resources}, function(response) {});
+                            chrome.runtime.sendMessage({greeting: "update devResource", data: resources}, function(response) {});
 
                         });
 
@@ -403,7 +401,7 @@
                                 
                             // Send a message to devtools.js via eventPage.js to remove  
                             // the resource we just committed from the devResources array.
-                            chrome.extension.sendMessage({greeting: "remove resource", data: id}, function(response) {});
+                            chrome.runtime.sendMessage({greeting: "remove resource", data: id}, function(response) {});
                             
                             // And remove it from view.
                             setTimeout(function(){

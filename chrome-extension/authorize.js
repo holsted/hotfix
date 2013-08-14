@@ -6,7 +6,9 @@
     var authCode = getAuthCode(window.location.href, function(code){
           // Get the access token and username and pass them on to panel.js to be saved in localStorage.
 
-          var accessToken = getAccessToken(code, function(response){
+          
+        var accessToken = getAccessToken(code, function(response){
+            
             var data = {};
             data.accessTokenDate = new Date().valueOf();
             data.accessToken = JSON.parse(response).token;
@@ -19,11 +21,15 @@
             var user = github.getUser();
 
             // Get the details for the current user.
+       
             var currentUser = user.currentUser(function(err, user){
 
-                // Add the username to the data object.
-                data.username = user.login;
-                if(!localStorage.getItem('hotfix-welcome')){
+            // Add the username to the data object.
+         
+            data.username = user.login;
+            
+                chrome.runtime.sendMessage({greeting: "reload_background", data: data}, function(response){      
+                    if(!localStorage.getItem('hotfix-welcome')){
                     document.getElementById('loading').style.display = 'none';
                     document.getElementById('welcome').style.display = 'block';
                     localStorage.setItem('hotfix-welcome', 'true');
@@ -35,10 +41,13 @@
                     window.open('', '_self', '');
                     window.close();
                 }
-                chrome.extension.sendMessage({greeting: "reload_background", data: data}, function(response){});
-            });     
-        });
-    });   
+            });
+            
+        });     
+    });
+
+});   
+
 
     // Extract the auth code from the URL
 
@@ -50,6 +59,10 @@
         var code = url.match(/[&\?]code=([\w\/\-]+)/)[1];
         callback(code);
     }
+
+
+  
+    
 
 
     // Get the access token from github and send it to panel.js to be saved in localStorage

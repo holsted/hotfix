@@ -10,7 +10,7 @@ var panelId;
 // Listens for a message from devtools.js. Once received opens a new window to 
 // authorize the user with GitHub.
 
-chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if (request.greeting == "authorize_me"){
         panelId = sender.tab.id;
         chrome.windows.create({'url' : 'https://github.com/login/oauth/authorize?client_id=4e246d0bfea1c15993a2&scope=repo', 'width':1100, 'height':650});
@@ -20,7 +20,7 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 
 // Listens for a message form devtools.js to reload panel.html on succesful auth
 
-chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if (request.greeting == "reload_background"){
         chrome.tabs.sendMessage(panelId, {greeting: "reload_panel", data: request.data}, function(response) {});
         sendResponse({greeting:"reloaded"});    
@@ -31,7 +31,7 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 // panel.js sends a response containing the resourceArray that is created in panel.js
 // This is done to ensure that both arrays are in sync
 
-chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if (request.greeting == "update resources"){
         if(sender.tab.id == -1){
             alert("Unfortunately, Hotfix doesn't work properly when Chrome Developer Tools is docked to the main window. Please undock Dev Tools by clicking on the button in the bottom left corner. Then close and reopen Dev Tools.");
@@ -47,7 +47,7 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 // When a resource is removed in panel.js this makes passes a message to
 // devtools.js to make sure it gets removed in the other array
 
-chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if (request.greeting == "remove resource") {
         chrome.tabs.sendMessage(sender.tab.id, {greeting: "update array", data: request.data}, function(response) {});
     }
@@ -56,7 +56,7 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 // When a resource path is edited in panel.js, this passes a message to
 // devtools.js to make sure it gets removed in the other 
 
-chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if (request.greeting == "update devResource") {
         chrome.tabs.sendMessage(sender.tab.id, {greeting: "update devResources", data: request.data}, function(response) {});
     }
@@ -65,7 +65,7 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 // Receives a message from panel.js when the logout link is clicked. 
 // logs the user out of GitHub, clears local storage, and refreshes panel.html
 
-chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if (request.greeting == "logout") {
         chrome.windows.create({'url':'https://github.com/logout'}, function(window){
             chrome.tabs.sendMessage(sender.tab.id, {greeting: "unload_panel"}, function(response) {});

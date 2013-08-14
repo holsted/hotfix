@@ -54,7 +54,7 @@ chrome.devtools.panels.create("Hotfix", "img/toolbar.png", "/panel.html", functi
 	// Update devResources here after the resources have been processed on
 	// panel.js. Making sure to keep everything in sync. 
 
-	chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
+	chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 		if (request.greeting == "sync array"){
 		devResources = request.data;
 		}
@@ -62,7 +62,7 @@ chrome.devtools.panels.create("Hotfix", "img/toolbar.png", "/panel.html", functi
 	
 	//When a resouce is removed on panel.js, remove it from devResources here.
 
-	chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
+	chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 		if (request.greeting == "update array"){
 		var id = request.data;
 			for (var key in devResources) {
@@ -73,7 +73,7 @@ chrome.devtools.panels.create("Hotfix", "img/toolbar.png", "/panel.html", functi
 		}
 	});
 	
-	chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
+	chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 		if (request.greeting == "update devResources"){
 			devResources = request.data;
 		}
