@@ -3,42 +3,26 @@
     
     // Get the authorization code from the url that was returned by GitHub
 
-    var authCode = getAuthCode(window.location.href);   
-    
+    var authCode = getAuthCode(window.location.href, function(code){
+          // Get the access token and username and pass them on to panel.js to be saved in localStorage.
 
-    // Extract the auth code from the URL
+          var accessToken = getAccessToken(code, function(response){
+            var data = {};
+            data.accessTokenDate = new Date().valueOf();
+            data.accessToken = JSON.parse(response).token;
 
-    function getAuthCode(url){
-        var error = url.match(/[&\?]error=([^&]+)/);
-        if (error) {
-            throw 'Error getting authorization code: ' + error[1];
-        }
-        return url.match(/[&\?]code=([\w\/\-]+)/)[1];
-    }
+            var github = new Github({
+                token: data.accessToken,
+                auth: "oauth"
+            });
 
-      
-    // Get the access token and username and pass them on to panel.js to be saved in localStorage.
-    
-    var accessToken = getAccessToken(authCode, function(response){
-        var data = {};
-        data.accessTokenDate = new Date().valueOf();
-        data.accessToken = JSON.parse(response).token;
-        
-        var github = new Github({
-            token: data.accessToken,
-            auth: "oauth"
-        });
+            var user = github.getUser();
 
-        var user = github.getUser();
+            // Get the details for the current user.
+            var currentUser = user.currentUser(function(err, user){
 
-        // Get the details for the current user.
-
-        var currentUser = user.currentUser(function(err, user){
-
-            // Add the username to the data object.
-
-            data.username = user.login;
-            chrome.extension.sendMessage({greeting: "reload_background", data: data}, function(response){      
+                // Add the username to the data object.
+                data.username = user.login;
                 if(!localStorage.getItem('hotfix-welcome')){
                     document.getElementById('loading').style.display = 'none';
                     document.getElementById('welcome').style.display = 'block';
@@ -51,12 +35,23 @@
                     window.open('', '_self', '');
                     window.close();
                 }
-            });
-            
-        });     
-    });
+                chrome.extension.sendMessage({greeting: "reload_background", data: data}, function(response){});
+            });     
+        });
+    });   
 
-  
+    // Extract the auth code from the URL
+
+    function getAuthCode(url, callback){
+        var error = url.match(/[&\?]error=([^&]+)/);
+        if (error) {
+            throw 'Error getting authorization code: ' + error[1];
+        }
+        var code = url.match(/[&\?]code=([\w\/\-]+)/)[1];
+        callback(code);
+    }
+
+
     // Get the access token from github and send it to panel.js to be saved in localStorage
 
     function getAccessToken(authorizationCode, callback){
@@ -72,4 +67,4 @@
     };
 
 })();  
-      
+

@@ -306,7 +306,6 @@
         
         var commitButtons = document.getElementsByClassName('commit-button');
 
-        console.log(commitButtons.length);
         for (var i = 0; i < commitButtons.length; i++) {
             commitButtons[i].addEventListener('click', function() {
               
