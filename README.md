@@ -1,3 +1,7 @@
+UPDATE: 
+=========
+This project filled a need I had when I first started writing code. Due to time constraints and other projects, I've stopped supporting it and pulled it from the Chrome store. If it's something you might be interested in maintaining, please send me an email. 
+
 hotfix
 =========
 
